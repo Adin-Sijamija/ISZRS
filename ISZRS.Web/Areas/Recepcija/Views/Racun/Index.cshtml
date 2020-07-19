@@ -1,0 +1,385 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.RacunNeGrupisanVM
+
+@{
+    ViewData["Title"] = "Račun";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+
+    var BrojDanaRez = ((Model.Rezervacija.DatumZavrsetkaRezerviranja - Model.Rezervacija.DatumPocetkaRezerviranja).Days);
+
+}
+
+<h2>Račun rezervacije</h2>
+
+<div class="row">
+    <div class="col-md-4 ">
+
+        <form asp-action="Info" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="@Model.Rezervacija.RezervacijaId" />
+            <div class="form-group">
+                <label asp-for="@Model.Rezervacija.DatumPocetkaRezerviranja" class="control-label"></label>
+                <input asp-for="@Model.Rezervacija.DatumPocetkaRezerviranja" class="form-control" readonly="readonly" />
+                <span asp-validation-for="@Model.Rezervacija.DatumPocetkaRezerviranja" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Rezervacija.DatumZavrsetkaRezerviranja" class="control-label"></label>
+                <input asp-for="@Model.Rezervacija.DatumZavrsetkaRezerviranja" class="form-control" readonly="readonly" />
+                <span asp-validation-for="@Model.Rezervacija.DatumZavrsetkaRezerviranja" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Rezervacija.DatumEvidentiranjaRezerviranja" class="control-label"></label>
+                <input asp-for="@Model.Rezervacija.DatumEvidentiranjaRezerviranja" class="form-control" readonly="readonly" />
+                <span asp-validation-for="@Model.Rezervacija.DatumEvidentiranjaRezerviranja" class="text-danger"></span>
+            </div>
+
+            @if (Model.Rezervacija.RezervacijaAktivna)
+            {
+
+
+
+
+
+                @if (Model.Rezervacija.DatumZavrsetkaRezerviranja < DateTime.Now)
+                {
+
+                    <h3><span style="color:orangered">Rezervacija istekla</span></h3>
+
+                    <h4>
+                        <span style="color:black">Potrebno je završiti sada</span>
+                    </h4>
+
+                }
+                else
+                {
+                    <h3><span style="color:green">Rezervacija u toku</span></h3>
+
+
+                    if ((Model.Rezervacija.DatumZavrsetkaRezerviranja - DateTime.Now).Days > 2)
+                    { <h4>
+                            <span style="color:green">Preostalo još @((Model.Rezervacija.DatumZavrsetkaRezerviranja - DateTime.Now).Days) dana</span>
+                        </h4>
+                    }
+                    else
+                    {
+                        <h4>
+                            <span style="color:green">Preostalo još @((Model.Rezervacija.DatumZavrsetkaRezerviranja - DateTime.Now).Hours) sati</span>
+                        </h4>
+                    }
+
+
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+            }
+            else
+            {
+                <h3>
+                    <span style="color:grey">Rezervacija na čekanju</span>
+                </h3>
+                <h4>
+                    <span style="color:grey">Aktivna za  @((Model.Rezervacija.DatumPocetkaRezerviranja - DateTime.Now).Days) dana</span>
+                </h4>
+            }
+
+
+        </form>
+        <br />
+        <a class="btn btn-block btn-warning" id="RacunFinish" @*asp-action="GetRacun" *@ asp-action="NapraviracunPDf" asp-route-rezId="@Model.Rezervacija.RezervacijaId" target="_blank">Završi rezervaciju</a>
+
+    </div>
+
+    <div class="col-md-1 ">
+
+
+    </div>
+    <div class="col-md-7 ">
+
+        <h2>Cijena</h2>
+        <hr />
+        <div>
+            <h3>Cijena soba</h3>
+            <table class="table table-responsive table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+                            Broj Sobe
+                        </th>
+                        <th>Cijena</th>
+                        <th>Posebni Namještaj</th>
+                        <th> Ukupna Cijena Sobe</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.SobeCijene)
+                    {
+                        <tr>
+                            <td>
+                                <p>   Soba broj @item.Soba.BrojSobe</p>
+                                <p>Broj sprata @item.Soba.BrojSobe</p>
+                                <p>Tip sobe @item.Soba.TipSobe.Naziv</p>
+                            </td>
+                            <td>
+                                <p>@item.Soba.Cijena KM dnevno</p>
+                                <p>Broj dana: <b> @BrojDanaRez</b></p>
+                                <p>Cijena sobe:<b>  @(item.Soba.Cijena * BrojDanaRez) KM</b></p>
+                            </td>
+                            <td>
+                                @if (item.sobeCijenaNamjestajs.Count() > 0)
+                                {
+                                    <table class=" table">
+                                        <thead>
+                                            <tr>
+                                                <th>Naziv</th>
+                                                <th>Količina</th>
+                                                <th>Cijena</th>
+                                                <th>Ukupno</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var namjestaj in item.sobeCijenaNamjestajs)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @namjestaj.Namjestaj.Ime
+                                                    </td>
+                                                    <td>@namjestaj.kolicina</td>
+                                                    <td>@namjestaj.Namjestaj.Cijena KM</td>
+                                                    <td>@namjestaj.cijena KM</td>
+                                                </tr>
+
+                                            }
+                                            @*<tr>
+                                                    <td class="col-md-12"></td>
+                                                </tr>*@
+                                        </tbody>
+
+
+                                    </table>
+                                    <h5 class="pull-right"><b>Ukupna Cijena Namještaja @item.CijenaNamjestaja KM</b></h5>
+
+
+                                }
+                                else
+                                {
+                                    <span><b>Nema posepbnog namještaja</b></span>
+                                }
+
+
+                            </td>
+                            <td>
+                                <p> <b> @(item.CijenaSobe + item.CijenaNamjestaja) KM </b></p>
+                            </td>
+                        </tr>
+
+
+                    }
+
+                </tbody>
+            </table>
+            <h3 class="pull-right"><b>Cijena svih soba @Model.UkupnaCijenaSoba KM</b></h3>
+        </div>
+        <br />
+        <div>
+            <h3>Cijena naruđbi </h3>
+            <table class="table table-responsive table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+                            Broj Naruđbe
+                        </th>
+                        <th>Datum Dostave</th>
+                        <th>Jela</th>
+                        <th> Ukupna Cijena</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.NarudzbeRacuni)
+                    {
+                        <tr>
+                            <td>
+                                <p>Narudzba broj: @item.Narudzba.Id</p>
+                                <p>Za sobu broj: @item.Narudzba.ZaduzenaSoba.Sobe.BrojSobe</p>
+                            </td>
+                            <td>
+                                <p>Datum dostave: @item.Narudzba.DatumDostave.ToShortDateString()</p>
+                                <p>Vrijeme dostave: @item.Narudzba.DatumDostave.ToShortTimeString()</p>
+
+                            </td>
+                            <td>
+
+                                <table class=" table">
+                                    <thead>
+                                        <tr>
+                                            <th>Naziv Hrane</th>
+                                            <th>Količina</th>
+                                            <th>Cijena</th>
+                                            <th>Ukupno</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var hrana in item.Hrana)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @hrana.Hrana.Naziv
+                                                </td>
+                                                <td>
+                                                    @hrana.Kolicina
+                                                </td>
+                                                <td>
+                                                    @hrana.Hrana.Cijena KM
+                                                </td>
+                                                <td>
+                                                    @(hrana.Kolicina * hrana.Hrana.Cijena) KM
+
+                                                </td>
+                                            </tr>
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td>
+                                <h5><b> @item.CijenaNarudzbi KM</b></h5>
+
+                            </td>
+
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+            <h3 class="pull-right"><b>Cijena svih naruđbi @Model.UkupnaCijenaNarudzbi KM</b></h3>
+
+        </div>
+        <hr />
+
+        <div>
+            <h3>Cijena usluga @Model.UslugeRacuni.Count()</h3>
+            <table class="table table-responsive table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+                            Broj Usluge
+                        </th>
+                        <th>Datum Usluge</th>
+                        <th>Dodaci</th>
+                        <th> Ukupna Cijena</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.UslugeRacuni)
+                    {
+                        <tr>
+                            <td>
+                                <p>Usluga broj: @item.Zaduzivanje.Id</p>
+                                <p>Za goste:</p>
+                                @foreach (var gost in item.Gosti)
+                                {
+                                    <p>@gost.PunoIme</p>
+                                }
+                            </td>
+                            <td>
+                                <p>Početak usluge: @item.Zaduzivanje.PocetakZaduzivanja</p>
+                                <p>Kraj usluge: @item.Zaduzivanje.KrajZaduzivanja</p>
+                                <p>Tip usluge: @item.Zaduzivanje.Usluga.TipCijene</p>
+                                <p>Cijena: @item.Zaduzivanje.Usluga.Cijena KM</p>
+                            </td>
+                            <td>
+                                @if (item.Dodaci.Count() > 0)
+                                {
+                                    <table class=" table">
+                                        <thead>
+                                            <tr>
+                                                <th>Naziv</th>
+                                                <th>Količina</th>
+                                                <th>Cijena</th>
+                                                <th>Ukupno</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+
+                                            @foreach (var dodatak in item.Dodaci)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @dodatak.Dodaci.Ime
+                                                    </td>
+                                                    <td>
+                                                        @dodatak.Kolicina
+                                                    </td>
+                                                    <td>
+                                                        @dodatak.Dodaci.Cijena KM
+                                                    </td>
+                                                    <td>
+                                                        @(dodatak.Kolicina * dodatak.Dodaci.Cijena) KM
+                                                    </td>
+                                                </tr>
+
+                                            }
+
+
+
+                                        </tbody>
+
+
+                                    </table>
+
+                                }
+                                else
+                                {
+                                    <h4>Usluga nema dodataka</h4>
+                                }
+
+                            </td>
+                            <td>
+                                <p><b>@item.cijena KM</b></p>
+                            </td>
+
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+            <h3 class="pull-right"><b>Cijena svih usluga @Model.UkupnaCijenaUsluga KM</b></h3>
+        </div>
+        <hr />
+        <hr />
+        <h2>Ukupna cijena: @Model.Total KM</h2>
+
+    </div>
+
+
+</div>
+
+@section Scripts{
+
+    <script>
+        $("#RacunFinish").click(function () {
+
+            setTimeout(
+                function myfunction() {
+                    window.location.href = '@Url.Action("Index","Pocetna")';
+                }
+                ,2000);
+        });
+    </script>
+}

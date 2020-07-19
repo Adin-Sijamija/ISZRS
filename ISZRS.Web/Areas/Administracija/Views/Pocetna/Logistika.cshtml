@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewData["Title"] = "Logistika";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+
+}
+
+<br />
+<h2>Logistika</h2>
+<hr />
+
+<div class=" row">
+
+    <div class="row">
+      
+        <div class="col-xs-6 col-md-3">
+            <div class="thumbnail">
+
+                <a asp-action="LogistikaSobe" class="thumbnail">
+                    <img src="~/images/SobeLink.jpg" class="img-responsive" style="height:400px; width:200px; object-fit:cover" />
+                </a>
+                <h3>Sobe</h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-xs-6 col-md-3">
+            <div class="thumbnail">
+
+                <a asp-controller="Namjestaj" asp-area="Administracija" asp-action="Index" class="thumbnail">
+                    <img src="~/images/Logistika.jpg" class="img-responsive" style="height:400px; width:200px; object-fit:cover" />
+                </a>
+                <h3>Namještaj</h3>
+
+            </div>
+        </div>
+
+        <div class="col-xs-6 col-md-3">
+            <div class="thumbnail">
+                <a asp-action="LogistikaUsluge" class="thumbnail">
+                    <img src="~/images/usluge4.jpg" class="img-responsive" style="height:400px; width:200px; object-fit:cover" />
+                </a>
+                <h3>Usluge</h3>
+            </div>
+        </div>
+
+        <div class="col-xs-6 col-md-3">
+            <div class="thumbnail">
+                <a asp-action="Index" asp-controller="Jela" asp-area="Administracija">
+                    <img src="~/images/narudbe.jpg" class="img-responsive" style="height:400px; width:200px; object-fit:cover" />
+                </a>
+                <h3>Hrana</h3>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+

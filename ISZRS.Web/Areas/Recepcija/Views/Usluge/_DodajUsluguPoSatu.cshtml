@@ -1,0 +1,31 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.UslugaRezervacijaDodavanjeVM
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<h2>Po satu</h2>
+
+<form asp-action="NovaUslugaPoSatu" method="post" id="PoSatuForma">
+
+    <input name="rezId" value="@Model.Rezervacija.RezervacijaId" hidden="hidden" />
+    <input name="uslugaId" value="@Model.Usluga.Id" hidden="hidden" />
+
+    <div class="form-group">
+        <label class="control-label"> Datum usluge</label>
+        <input class="form-control" id="PoSatuDatumPocetka" name="DatumPocetka" value="@Model.Rezervacija.DatumPocetkaRezerviranja.ToString("yyyy-MM-dd")" type="date" />
+    </div>
+    <div class="form-group">
+        <label class="control-label"> Vrijeme usluge</label>
+        <input class="form-control" id="PoSatuVrijemePocetka" name="VrijemePocetka" type="time" />
+    </div>
+    <div class="form-group">
+        <label class="control-label"> Broj Sati</label>
+        <input class="form-control" id="BrojSati" min="1" value="1"name="sati" type="number" />
+    </div>
+
+    <h4 style="display:none" class="animated fadeInUp" id="PosatuInfoDiv">Ukupna cijena: <span id="PoSatuInfoDivCijena">0</span> KM</h4>
+
+    <div class="form-group">
+        <input type="submit" value="Snimi" class="btn btn-success" />
+    </div>
+</form>

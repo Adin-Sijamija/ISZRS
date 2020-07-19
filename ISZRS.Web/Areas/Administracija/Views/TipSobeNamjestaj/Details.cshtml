@@ -1,0 +1,38 @@
+﻿@model ISZRS.Data.Models.TipSobeNamjestaj
+
+@{
+    ViewData["Title"] = "Detalji";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Detalji tip sobe namjestaj</h2>
+<hr />
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TipSobe)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TipSobe.Naziv)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TipNamjestaja)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TipNamjestaja)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Kolicina)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Kolicina)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-default">Uredi</a> |
+    <a asp-action="Index" class="btn btn-default">Nazad</a>
+
+</div>

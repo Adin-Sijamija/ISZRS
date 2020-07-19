@@ -1,0 +1,155 @@
+﻿@model ISZRS.Data.Models.Osobe
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+
+    // Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+
+
+}
+
+
+
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
+
+<div class="row">
+
+    <input type="text" class="AutoCompleteCustom form-control input-lg " name="term" ID="GostiInput" placeholder="Pronađi gosta" />
+    <span class="glyphicon glyphicon-search"></span>
+</div>
+
+<br />
+<br />
+
+<div class="row">
+
+    <a class="btn btn-default btn-block " asp-action="NovaRezervacija" asp-controller="Rezervacije" asp-area="Recepcija">Nova rezervacija</a>
+
+    <a class="btn btn-default btn-block" asp-action="Index" asp-controller="Rezervacije" asp-area="Recepcija">Sve rezeracije</a>
+
+
+
+</div>
+
+@section Scripts{
+
+    <script>
+        $(document).ready(function () {
+
+
+
+            $("#GostiInput").autocomplete({
+
+                autoFocus: "true",
+                delay: "300",
+                minLength: "1",
+                source: function (request, response) {
+
+                    $.ajax({
+                        url: '@Url.Action("GostAutocomplete", "Pocetna")',
+                        type: "POST",
+                        data: request,
+                        success: function (data) {
+                            console.log(data);
+
+                            response($.map(data, function (item) {
+                                return {
+                                   // label: item.punoIme,
+                                    label: item.gostInfo,
+                                    value: item.id
+                                };
+                            }));
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    //alert('you have selected ' + ui.item.label + ' ID: ' + ui.item.value);
+
+                    event.preventDefault();
+                    $(this).val(ui.item.label);
+
+                    console.log();
+                    var ID = ui.item.value;
+                    console.log();
+
+                        var URL = '@Url.Action("Info","Gosti",new { GostId = -1 })';
+                        URL = URL.replace("-1", ID);
+
+                    window.location.href = URL;
+
+                    //var ID = parseInt(ui.item.value);
+                    //var url = "Recepcija/Gosti/Info?GostId=" +parseInt(ID);
+                    //window.location.href = url;
+
+                }
+
+            });
+
+
+
+
+        });
+
+
+
+
+        @*$(document).ready(function () {
+            $("#txtLanguages").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("GostAutocomplete", "Pocetna")',
+                        type: "POST",
+                        cache: false,
+                        dataType: "json",
+                        data: request,
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.PunoIme, value: item.Id };
+                            }));
+
+                        }
+                    });
+                },
+                messages: {
+                    noResults: "", results: ""
+                }
+            });
+        })*@
+
+    @*$(document).ready(function () {
+        $("#txtLanguages").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GostAutocomplete", "Pocetna")',
+                    type: 'GET',
+                    cache: false,
+                    data: request,
+                    dataType: 'json',
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.PunoIme,
+                                value: item.Id
+                            };
+                        }));
+                    }
+                });
+            },
+            minLength: 2,
+            select: function (event, ui) {
+                alert('you have selected ' + ui.item.label + ' ID: ' + ui.item.value);
+                $('#txtSearch').val(ui.item.label);
+                return false;
+            }
+        });
+    });*@
+
+
+    </script>}

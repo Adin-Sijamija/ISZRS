@@ -1,0 +1,281 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.NajmjestajDodavanjeVM
+
+
+@{
+    ViewData["Title"] = "Dodaj Namještaj";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+}
+
+@using ISZR.Web.Models
+@*@using ISZR.Web.Models.Namjestaj.TipNamjestaja*@
+
+
+<div class="container">
+    <br />
+    <h3>Dodaj namještaj u sobu</h3>
+    <h4>Svaka soba dolazi opremljenja besplatnim namještajom. Po želji gosta moguće je zamijeniti namještaj</h4>
+    <hr />
+    <ul class="nav nav-pills">
+        @foreach (Namjestaj.TipNamjestaja vrstaNamjestaja in Enum.GetValues(typeof(Namjestaj.TipNamjestaja)))
+        {
+
+            <li><a data-toggle="pill" href="#@(vrstaNamjestaja)">@(vrstaNamjestaja)</a></li>
+        }
+
+    </ul>
+    <div class="tab-content">
+
+        @foreach (Namjestaj.TipNamjestaja vrstaNamjestaja in Enum.GetValues(typeof(Namjestaj.TipNamjestaja)))
+        {
+
+
+            <div id="@(vrstaNamjestaja)" class="tab-pane fade">
+
+                <div id="GlavniDiv">
+
+                    @await Component.InvokeAsync("SobaNamjestaj", new { id = Model.sobe.Id, ZaduzenejeID=Model.ZaduzenjeID, tip = vrstaNamjestaja })
+
+                </div>
+
+            </div>
+
+        }
+
+    </div>
+</div>
+
+<br />
+<br />
+
+<a class="btn btn-default" href='javascript:history.go(-1)'>Nazad</a>
+
+@section Scripts{
+    <script>
+
+
+
+        $(document).ready(function () {
+            // izvršava nakon što glavni html dokument bude generisan
+
+            //dinamicki generisani pillovi nmg imati aktive iz pocetka pa je zato dodan na ocitavanju stranice
+            $("li:first").children().trigger("click");
+            console.log("triger");
+
+            UpdatePill();
+        });
+
+        $(document).ajaxComplete(function () {
+            // izvršava nakon bilo kojeg ajax poziva
+            UpdatePill();
+        });
+
+
+        function UpdatePill() {
+
+            $("form.NamjestajUklanjanje").submit(function (event) {
+
+                var uspjeh = false;
+                event.preventDefault();
+                console.log("<button> za uklanjanje pritisnut");
+
+                var action = $(this).attr("action");
+                var form = $(this);
+                console.log(action);
+                console.log(form);
+
+                //var UpdateForma = $(this).closest("#GlavniDiv").children("form.UpdateForm").first();
+                //var UpdateAction = $(UpdateForma).attr("action");
+
+                var GlavniDiv = $(this).closest("#GlavniDiv");
+
+
+                var UpdateForma = $(this).closest("#GlavniDiv").children("form.UpdateForm").first();
+                var UpdateAction = $(UpdateForma).attr("action");
+
+                console.log(UpdateForma);
+                console.log(UpdateAction);
+
+
+                $.ajax({
+                    type: "post",
+                    url: action,
+                    data: form.serialize(),
+                    success: function (data) {
+                        console.log("uspjeh post" + action);
+                        console.log(data);
+
+
+
+
+                        $.get({
+                            url: UpdateAction,
+                            data: UpdateForma.serialize(),
+                            success: function (data) {
+                                console.log("uspjeh post" + UpdateAction);
+
+                                GlavniDiv.empty();
+                                GlavniDiv.html(data).show(2000);
+                            }
+                        });
+                        $.notify("Namještaj uspješno uklonjen!");
+                    }
+                });
+
+
+            });
+
+
+            $("form.NamjestajDodavanje").submit(function (event) {
+
+                var uspjeh = false;
+                event.preventDefault();
+                console.log("<button> za uklanjanje pritisnut");
+
+                var action = $(this).attr("action");
+                var form = $(this);
+                console.log(action);
+                console.log(form);
+
+                //var UpdateForma = $(this).closest("#GlavniDiv").children("form.UpdateForm").first();
+                //var UpdateAction = $(UpdateForma).attr("action");
+
+                var GlavniDiv = $(this).closest("#GlavniDiv");
+
+
+                var UpdateForma = $(this).closest("#GlavniDiv").children("form.UpdateForm").first();
+                var UpdateAction = $(UpdateForma).attr("action");
+
+                console.log(UpdateForma);
+                console.log(UpdateAction);
+
+
+                $.ajax({
+                    type: "post",
+                    url: action,
+                    data: form.serialize(),
+                    dataType: "json",
+                    success: function (dataa) {
+                        console.log("uspjeh post" + action);
+                        console.log(dataa);
+                        console.log(dataa.uspjeh);
+                        console.log(dataa.poruka);
+
+
+
+                        if (dataa.uspjeh === false) {
+
+                            $("#INFO").toggleClass("pulse");
+
+                        }
+
+
+                        $.get({
+                            url: UpdateAction,
+                            data: UpdateForma.serialize(),
+                            success: function (data) {
+                                console.log("uspjeh post" + UpdateAction);
+
+                                GlavniDiv.empty();
+                                GlavniDiv.html(data).show("slow");
+                            }
+                        });
+                        $.notify("Namještaj uspješno dodan!");
+
+                    }
+                });
+
+
+
+            });
+
+
+
+
+        }
+
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<div class="container">
+        <h2>Dodaj Namjestaj u Sobu</h2>
+        <p>To make the tabs toggleable, add the data-toggle="pill" attribute to each link. Then add a .tab-pane class with a unique ID for every tab and wrap them inside a div element with class .tab-content.</p>
+        <ul class="nav nav-pills">
+
+            @foreach (Namjestaj.TipNamjestaja vrstaNamjestaja in (Namjestaj.TipNamjestaja[])Enum.GetValues(typeof(Namjestaj.TipNamjestaja)))
+            {
+
+                <li><a data-toggle="pill" href="#@(vrstaNamjestaja)">@(vrstaNamjestaja)</a></li>
+
+
+            }
+
+        </ul>
+
+        <div class="tab-content">
+
+            @foreach (Namjestaj.TipNamjestaja vrstaNamjestaja in (Namjestaj.TipNamjestaja[])Enum.GetValues(typeof(Namjestaj.TipNamjestaja)))
+            {
+
+
+                <div id="@(vrstaNamjestaja)" class="tab-pane fade">
+                    <p>@(vrstaNamjestaja)</p>
+
+                    <div id="RezervisaneDiv">
+
+
+                        @Url.Action("_NamjestajSlobodan", "Sobe", new { id = Model.Id, namjestaj = (int)vrstaNamjestaja, slobodne = true });
+
+                        @await Component.InvokeAsync("SobaNamjestaj", new { id = Model.Id, namjestaj = vrstaNamjestaja, slobodne = true })
+
+
+
+
+                    </div>
+
+                    <div id="SlobodneDiv">
+
+                    </div>
+
+
+
+                </div>
+
+
+
+            }
+
+
+
+        </div>
+    </div>*@
+
+
+

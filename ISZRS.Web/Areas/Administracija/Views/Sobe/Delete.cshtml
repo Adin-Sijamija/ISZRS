@@ -1,0 +1,45 @@
+﻿@model ISZR.Web.Models.Sobe
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Obriši sobu</h2>
+<hr />
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.BrojSobe)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BrojSobe)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BrojSprata)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BrojSprata)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Cijena)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Cijena)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TipSobe)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TipSobe.Naziv)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Obriši" class="btn btn-danger" /> |
+        <a asp-action="Index" class="btn btn-default">Nazad</a>
+    </form>
+</div>

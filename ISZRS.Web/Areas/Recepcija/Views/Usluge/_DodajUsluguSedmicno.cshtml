@@ -1,0 +1,35 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.UslugaRezervacijaDodavanjeVM
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    DateTime DateTimeNew = Model.Rezervacija.DatumPocetkaRezerviranja.AddDays(7);
+
+    if (DateTimeNew>Model.Rezervacija.DatumZavrsetkaRezerviranja)
+    {
+        DateTimeNew = Model.Rezervacija.DatumZavrsetkaRezerviranja;
+    }
+
+}
+<form asp-action="NovaUslugaSedmicno" method="post" id="SedmicnoForma">
+
+    <input name="rezId" value="@Model.Rezervacija.RezervacijaId" hidden="hidden" />
+    <input name="uslugaId" value="@Model.Usluga.Id" hidden="hidden" />
+
+    <div class="form-group">
+        <label class="control-label"> Datum pocetka usluge</label>
+        <input class="form-control" id="SedmicnoDatumPocetka"  name="DatumPocetka" type="date" value="@Model.Rezervacija.DatumPocetkaRezerviranja.ToString("yyyy-MM-dd")" />
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Datum Zavrsetka</label>
+        <input class="form-control" id="SedmicnoDatumZavrsetka"  name="DatumZavrsetka" type="date" readonly="readonly" value="@DateTimeNew.ToString("yyyy-MM-dd")"/>
+    </div>
+
+    <h4 style="display:none" class="animated fadeInUp" id="SedmicnoInfoDiv">Upozorenje. Usluga ce trajati manje od 7 dana!</h4>
+
+    <div class="form-group">
+        <input type="submit" value="Snimi" class="btn btn-success" />
+    </div>
+</form>

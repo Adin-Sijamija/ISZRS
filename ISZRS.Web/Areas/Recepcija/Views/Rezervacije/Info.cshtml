@@ -1,0 +1,187 @@
+﻿@model ISZRS.Data.Models.Rezervacije
+
+@{
+    ViewData["Title"] = "Info";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Info Rezervacije @Model.RezervacijaId</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Info" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="RezervacijaId" />
+            <div class="form-group">
+                <label asp-for="DatumPocetkaRezerviranja" class="control-label"></label>
+                <input asp-for="DatumPocetkaRezerviranja" class="form-control" readonly="readonly" />
+                <span asp-validation-for="DatumPocetkaRezerviranja" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DatumZavrsetkaRezerviranja" class="control-label"></label>
+                <input asp-for="DatumZavrsetkaRezerviranja" class="form-control" readonly="readonly" />
+                <span asp-validation-for="DatumZavrsetkaRezerviranja" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DatumEvidentiranjaRezerviranja" class="control-label"></label>
+                <input asp-for="DatumEvidentiranjaRezerviranja" class="form-control" readonly="readonly" />
+                <span asp-validation-for="DatumEvidentiranjaRezerviranja" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Zaposlenik" class="control-label"></label>
+                <input asp-for="Zaposlenik" class="form-control" readonly="readonly" />
+                <span asp-validation-for="Zaposlenik" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GlavniGost.PunoIme" class="control-label">Rezervisao</label>
+                <input asp-for="GlavniGost.PunoIme" class="form-control" readonly="readonly" />
+                <span asp-validation-for="GlavniGost.PunoIme" class="text-danger"></span>
+            </div>
+
+            @if (Model.RezervacijaAktivna)
+            {
+                <h3><span style="color:green">Rezervacija u toku</span></h3>
+                if ((Model.DatumZavrsetkaRezerviranja - DateTime.Now).Days > 2)
+                { <h4>
+                        <span style="color:green">Preostalo još @((Model.DatumZavrsetkaRezerviranja - DateTime.Now).Days) dana</span>
+                    </h4>
+                }
+                else
+                {
+                    <h4>
+                        <span style="color:green">Preostalo još @((Model.DatumZavrsetkaRezerviranja - DateTime.Now).Hours) sati</span>
+                    </h4>
+                }
+
+            }
+            else
+            {
+                <h3>
+                    <span style="color:grey">Rezervacija na čekanju</span>
+                </h3>
+                <h4>
+                    <span style="color:grey">Aktivna za  @((Model.DatumPocetkaRezerviranja - DateTime.Now).Days) dana</span>
+                </h4>
+                <br />
+                <a asp-action="PoništiRezervaciju" asp-route-rezId="@Model.RezervacijaId" class="btn btn-danger btn-block">Poništi rezervaciju</a>
+
+            }
+
+
+
+
+
+            <br />
+            <a class="btn btn-default" asp-action="Index">Nazad</a>
+            <br />
+        </form>
+
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-7">
+
+        <div class="row">
+
+
+            <div style="display:inline">
+                <a class="btn btn-default" asp-action="Index" asp-controller="Sobe" asp-route-id="@Model.RezervacijaId">
+                    <div class="ImgTextDiv">
+                        <img src="~/images/SobeLink.jpg" class="img-responsive" />
+                        <h1 class="ImgSpanBotLeft">Sobe</h1>
+                    </div>
+                </a>
+            </div>
+
+
+
+
+            <div style="display:inline">
+                <a class="btn btn-default" asp-action="RezervacijaZaduzenja" asp-controller="Usluge" asp-route-rezId="@Model.RezervacijaId">
+                    <div class="ImgTextDiv">
+                        <img src="~/images/usluge4.jpg" class="img-responsive img-rounded" />
+                        <h1 class="ImgSpanBotLeft">Usluge</h1>
+                    </div>
+                </a>
+            </div>
+
+            <div style="display:inline">
+                <a class="btn btn-default" asp-action="Index" asp-controller="Racun" asp-route-rezId="@Model.RezervacijaId">
+                    <div class="ImgTextDiv">
+                        <img src="~/images/racun.jpg" class="img-responsive img-rounded" />
+                        <h1 class="ImgSpanBotLeft">Racun</h1>
+                    </div>
+                </a>
+            </div>
+
+
+            @*@if (Model.RezervacijaAktivna)
+                    {
+                        <div style="display:inline">
+                            <a class="btn btn-default" asp-action="Index" asp-controller="Sobe" asp-route-id="@Model.RezervacijaId">
+                                <div class="ImgTextDiv">
+                                    <img src="~/images/SobeLink.jpg" class="img-responsive" />
+                                    <h1 class="ImgSpanBotLeft">Sobe</h1>
+                                </div>
+                            </a>
+                        </div>
+
+
+
+
+                        <div style="display:inline">
+                            <a class="btn btn-default" asp-action="RezervacijaZaduzenja" asp-controller="Usluge" asp-route-rezId="@Model.RezervacijaId">
+                                <div class="ImgTextDiv">
+                                    <img src="~/images/usluge4.jpg" class="img-responsive img-rounded" />
+                                    <h1 class="ImgSpanBotLeft">Usluge</h1>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div style="display:inline">
+                            <a class="btn btn-default" asp-action="Index" asp-controller="Usluge" asp-route-rezId="@Model.RezervacijaId">
+                                <div class="ImgTextDiv">
+                                    <img src="~/images/racun.jpg" class="img-responsive img-rounded" />
+                                    <h1 class="ImgSpanBotLeft">Racun</h1>
+                                </div>
+                            </a>
+                        </div>
+
+                    }
+
+                </div>
+                <div class="row">
+                    <a class="btn btn-default" asp-action="Index" asp-controller="Usluge" asp-route-rezId="@Model.RezervacijaId">Nova Usluga</a>
+
+                </div>
+                <div class="row">
+                    <a class="btn btn-default">Završi Rezervaciju</a>
+
+                </div>
+
+                @if (!Model.RezervacijaAktivna && !Model.RezervacijaZavrsena)
+                {
+                    <a class="btn btn-default" asp-action="DodajGlavnogGosta" asp-route-id="@Model.RezervacijaId">Dodaj Glavnog Gosta</a>
+                    <br />
+                    <a class="btn btn-default" asp-action="DodajSobe" asp-controller="Rezervacije" asp-route-id="@Model.RezervacijaId">Dodaj Sobe</a>
+                    <br />
+                    <a class="btn btn-default" asp-action="DodajGoste" asp-controller="Gosti" asp-route-id="@Model.RezervacijaId">Dodaj Goste</a>
+                    <br />
+                    <a class="btn btn-default" asp-action="Index" asp-controller="Sobe" asp-route-id="@Model.RezervacijaId">Uredi Sobe</a>
+                    <br />
+                    <a class="btn btn-default" asp-action="Index" asp-controller="Usluge" asp-route-rezId="@Model.RezervacijaId">Nova Usluga</a>
+                    <br />
+                }*@
+
+
+
+
+
+        </div>
+    </div>
+</div>
+
+<div>
+
+</div>
+

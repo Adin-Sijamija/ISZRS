@@ -1,0 +1,41 @@
+﻿@model IEnumerable<ISZR.Web.Models.Gosti>
+
+
+<table class="table table-hover" id="SviGostiPretraga">
+    <tbody class="connectedSortable">
+        <tr>
+
+            <th>
+                Ime Prezime
+            </th>
+            <th>Drzava</th>
+            <th>
+                Adresa
+            </th>
+        </tr>
+        @if (Model != null)
+        {
+
+            @foreach (var item in Model)
+            {
+                <tr Gost-Id="@item.Id">
+
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PunoIme)
+                    </td>
+                    <td>
+                        @(item.Gradovi.Naziv + "," + item.Gradovi.Drzave.Naziv)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Adresa)
+                    </td>
+
+                </tr>
+            }
+
+        }
+
+    </tbody>
+</table>
+

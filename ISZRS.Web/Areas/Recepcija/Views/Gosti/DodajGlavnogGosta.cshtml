@@ -1,0 +1,118 @@
+﻿@model IEnumerable<ISZR.Web.Models.Gosti>
+
+@{
+    ViewData["Title"] = "Dodaj Glavnog Gosta";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+   
+}
+
+
+
+<h2>Korak IV: Odabir glavnog gosta</h2>
+<hr />
+
+<h4>Odaberi gosta koji rezerviše</h4>
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-md-5 ">
+
+            <ul>
+                @foreach (var item in Model)
+                {
+                    <li GostID="@item.Id" class="liSelector" style="padding:10px">@(item.PunoIme)</li>@*+" " + item.Gradovi.Regija + " " + item.Gradovi.Drzave.Naziv*@
+                }
+            </ul>
+
+        </div>
+        <div class="col-md-1 ">
+     
+        </div>
+        <div class="col-md-5 " id="KarticaDiv">
+
+            <div id="KreditnaKartica" style="display:none"></div>
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+
+    <script>
+
+        $("li").click(function () {
+            console.log("li kliknut");
+            console.log($(this).attr("GostID"));
+            $(this).toggleClass("Oznacena");
+            $(this).siblings().removeClass("Oznacena");
+            var ID = $(this).attr("GostID");
+
+            $("#KreditnaKartica").hide();
+            GetKreditnuKarticu(ID);
+        });
+
+
+        $(document).ajaxComplete(function () {
+
+            PostKartu();
+
+        });
+
+
+
+        function GetKreditnuKarticu(ID) {
+            console.log('@Url.Action("GetKreditnuKarticu","Gosti",new {GostId=-1 })');
+
+
+            var RezID =@(ViewBag.RezID);
+            console.log(RezID);
+
+            var URL = '@Url.Action("GetKreditnuKarticu","Gosti",new {GostId=-1 })'
+            URL = URL.replace("-1", ID);
+            URL = URL + "&RezID=" + RezID;
+
+            
+            console.log(URL);
+
+            $.get({
+                url: URL,
+                success: function (data) {
+                    $("#KreditnaKartica").empty();
+                    $("#KreditnaKartica").html(data).fadeIn(2000);
+
+                }
+            });
+
+        }
+
+        function PostKartu() {
+
+
+            $("#KreditnaKarticaForm").submit(function (e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                console.log("DATA");
+
+                var from = $(this);
+                var akcija = $(this).attr("action");
+
+                $.post({
+                    url: akcija,
+                    data: from.serialize(),
+                    success: function (data) {
+                        console.log("DATA" + data);
+                        $("#KreditnaKartica").empty();
+                        $("#KreditnaKartica").html(data);
+
+                    }
+                });
+
+            });
+
+
+        }
+
+
+    </script>
+}

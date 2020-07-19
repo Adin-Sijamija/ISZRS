@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewData["Title"] = "Logistika Usluge";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Logistika Usluge</h2>
+
+<hr />
+
+<div class=" row">
+
+    <div class="row">
+        <div class="col-xs-6 col-md-3">
+            <div class="thumbnail">
+
+                <a asp-action="Index" asp-controller="Usluge" class="thumbnail">
+                    <img src="~/images/usluge4.jpg" class="img-responsive" style="height:400px; width:200px; object-fit:cover" />
+                </a>
+                <h3>Usluge</h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-xs-6 col-md-3">
+            <div class="thumbnail">
+
+                <a asp-action="Index" asp-controller="DodaciUsluge" class="thumbnail">
+                    <img src="~/images/uslugeDodaci.jpg" class="img-responsive" style="height:400px; width:200px; object-fit:cover" />
+                </a>
+                <h3>Usluge dodaci   </h3>
+
+            </div>
+        </div>
+
+    
+    </div>
+
+
+</div>
+

@@ -1,0 +1,578 @@
+﻿@*@model IEnumerable<ISZR.Web.Models.Jela>*@
+
+@model ISZR.Web.Models.Narudzbe
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+
+    ViewData["ModelID"] = Model.Id;
+}
+<hr />
+<h2>Naša jela</h2>
+<hr />
+<div class="container">
+    <div id="FormaDiv" class="FormaDiv">
+        <h2>Pronađi jelo</h2>
+        <hr />
+        <form id="HranaPretragaForma" method="get" asp-action="_Jela" asp-controller="Narudjba">
+            <input placeholder="Po Nazivu"style="margin-left:10px" name="Naziv" id="Naziv" class="TextSearchFieldMain form-control" />
+            <br />
+            <br />
+            <div class="form-inline">
+                <div class="input-group">
+                    <input type="number" min="0" placeholder="Cijena Od" name="CijenaOd" id="CijenaOd" class="form-control" />
+                    <div class="input-group-addon">KM</div>
+                </div>
+                <span>--</span>
+                <div class="input-group">
+                    <input type="number" min="0" placeholder="Cijena Do" name="CijenaDo" id="CijenaDo" class="form-control" />
+                    <div class="input-group-addon">KM</div>
+                </div>
+            </div> 
+            <br />
+            <br />
+            <input type="submit" class="btn btn-block btn-default" value="Pretraži" />
+            <br />
+            <br />
+            <input type="number" value="@Model.Id" name="NarudzbaID" readonly="readonly" hidden="hidden" />
+            <input type="number" name="Stranica" id="Stranica" value="1"  hidden="hidden" />
+            <input type="number" name="KartiPoStranici" value="5"  hidden="hidden" />
+        </form>
+    </div>
+</div>
+<hr />
+
+<div class="grid" id="grid">
+
+
+</div>
+<br />
+<br />
+<div id="LoadingDiv" style="text-align:center">
+    <br />
+    <img id="LoadingGif" src="~/images/ajax-loader.gif" alt="Loading..." style="display:none">
+</div>
+<br />
+<br />
+<br />
+<br />
+<br />
+
+
+
+
+<button id="NarudzbaDugme" class="open-button" onclick="openForm()">
+    Vasa Narudžba<span id="NarudzbaDugmeSpan" class="badge badge-primary">0</span>
+</button>
+
+<div class="form-popup" id="myForm">
+    <div class="form-container">
+        <h2>Narudžba za sobu br. @(Model.ZaduzenaSoba.Sobe.BrojSobe)</h2>
+
+        <div id="NarudzbaKorpa">
+
+
+        </div>
+
+        <a asp-action="ZavrsiNarudzbuGet" asp-route-narudzbaID="@Model.Id" class="btn">Zavrsi Narudžbu</a>
+        <a asp-action="PrekiniNarudzbu" asp-route-id="@Model.Id" class="btn cancel"
+           onclick="PonistiNarudzbu()">
+            <span class="glyphicon glyphicon-warning-sign"></span>  Prekini Narudžbu
+
+        </a>
+        <a  class="btn cancel" onclick="closeForm()">Zatvori</a>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+@section Scripts{
+    <script>
+        var ZadnjaStranica = false;
+        var ScrollAktiviran = true;
+
+        $(document).ready(function () {
+            $("#Stranica").val(parseInt(1));
+            Update();
+        });
+
+
+
+        $(document).ajaxComplete(function () {
+            RefreshAjax();
+        });
+
+
+       
+            $("#CijenaOd").on("change", function () {
+                $("#Stranica").val(parseInt(1));
+
+            });
+
+            $("#CijenaDo").on("change", function () {
+                $("#Stranica").val(parseInt(1));
+
+            });
+
+            $("#Naziv").on("change", function () {
+                $("#Stranica").val(parseInt(1));
+
+            });
+       
+
+        function openForm() {
+            document.getElementById("myForm").style.display = "block";
+            $(this).hide();
+        }
+
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+
+        function PonistiNarudzbu() {
+
+            if (confirm("Da li želite poništiti naruđbu")===true) {
+                console.log($(this).attr("href"));
+                window.location.href = $(this).attr("href");
+            }
+
+        }
+
+
+        function Update() {
+            $("#LoadingGif").toggle("slow");
+
+            this.setTimeout(DodajJosKarti(), 5000);
+
+
+            $("#LoadingGif").toggle("slow");
+
+
+
+        }
+
+        function DodajJosKarti() {
+            var url = $("#HranaPretragaForma").attr("action");
+            var FormData = $("#HranaPretragaForma");
+
+            console.log(url);
+            console.log(FormData);
+
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: FormData.serialize(),
+                success: function (data) {
+                    $("#grid").append(data).show(2000);
+
+                    var stranica = $("#Stranica").val();
+                    $("#Stranica").val(parseInt(stranica) + 1);
+                }
+
+            });
+        }
+
+
+
+
+        $(window).scroll(function (event) {
+            if ($(window).scrollTop() + $(window).height() > $(document).height() - 100 && ScrollAktiviran) {
+
+                console.log("bottom called");
+                ScrollAktiviran = false;
+
+
+                    Update();
+                    setTimeout(function () {
+                        ScrollAktiviran = true;
+
+                    }, 3000);
+            }
+        });
+
+
+
+        function RefreshAjax() {
+
+
+            $("#HranaPretragaForma").submit(function (event) {
+                event.preventDefault();
+                var url = $("#HranaPretragaForma").attr("action");
+                var FormData = $("#HranaPretragaForma");
+
+                console.log(url);
+                console.log(FormData);
+
+                $("#Stranica").attr("value", 1);
+
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: FormData.serialize(),
+                    success: function (data) {
+                        console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+                        $("#grid").empty();
+                        $("#grid").html(data);
+
+
+                        var stranica = $("#Stranica").val();
+                        $("#Stranica").val(parseInt(stranica) + 1);
+                    }
+
+                });
+
+            });
+
+              
+            $("form.UkloniKorpa").click(function () {
+
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                console.log("submit pritisnut");
+
+                var forma = $(this);
+                var action = $(this).attr("action");
+
+                console.log("forma karta" + forma);
+                console.log("forma karta" + action);
+
+
+                $.post({
+                    url: action,
+                    type: "POST",   
+                    data: forma.serialize(),
+                    
+                    async: "false",
+                    success: function (dataa) {
+                      
+                             $.ajax({
+                                    url: '@Url.Action("GetKorpaAsync", "Narudjba",new { id = @ViewData["ModelID"] })',
+                                    type: "GET",
+                                    async: "false",
+                                    success: function myfunction(data) {
+                                        $("#NarudzbaKorpa").empty();
+                                        $("#NarudzbaKorpa").html(data);
+                                    }
+                            });
+
+
+                        //$("#NarudzbaDugmeSpan").html(datta.broj_artikala);
+                        var vrj = parseInt($("#NarudzbaDugmeSpan").html());
+                        --vrj;
+                        $("#NarudzbaDugmeSpan").html(dataa.brojartikala);
+
+
+                    }
+
+                });
+
+            });
+
+
+
+            $("form.DodajJelo").submit(function (event) {
+
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                console.log("submit pritisnut");
+
+                var forma = $(this);
+                var action = $(this).attr("action");
+
+                console.log("forma karta" + forma);
+                console.log("forma karta" + action);
+
+
+                $.post({
+                    url: action,
+                    type: "POST",
+                    dataType: "json",
+                    data: forma.serialize(),
+                    async: "false",
+                    success: function (data) {
+
+                        console.log("Return data je:" + data);
+                        console.log("Return data je:" + data.uspjeh);
+                        console.log("Return data je:" + data.broj_artikala);
+
+
+                        if (data.uspjeh === true) {
+
+                           // notify
+                            console.log("Return Uspjeh");
+
+                            $("#NarudzbaDugmeSpan ").html(data.broj_artikala);
+                            $("#NarudzbaDugme ").addClass("shakeClass");
+
+                            setTimeout(function () { $("#NarudzbaDugme ").removeClass("shakeClass"); }, 1000);
+                            //css animacije nije moguce pustiti po zelji za
+
+
+
+                             $.ajax({
+                                    url: '@Url.Action("GetKorpaAsync", "Narudjba",new { id = @ViewData["ModelID"] })',
+                                    type: "GET",
+                                    async: "false",
+                                    success: function myfunction(data) {
+                                        $("#NarudzbaKorpa").empty();
+                                        $("#NarudzbaKorpa").html(data);
+                                    }
+                                });
+
+                        }
+                    }
+
+                });
+
+            });
+
+
+            $("HranaPretragaForma").submit(function (event) {
+
+
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                console.log("submit pritisnut");
+
+                var forma = $(this);
+                var action = $(this).attr("action");
+
+                console.log("forma filter" + forma);
+                console.log("forma filter" + action);
+
+
+                $.ajax({
+                    url: action,
+                    type: "GET",
+                    data: forma.serialize(),
+                    success: function (data) {
+
+                        $("#grid").empty();
+                        $("#grid").html(data).show(2000);
+
+
+                    }
+                });
+            });
+        }
+
+
+
+
+
+
+
+        @*$(document).ready(function () {
+            $("#Stranica").val(parseInt(1));
+            update();
+        });
+
+        $(document).ajaxComplete(function () {
+            AjaxReloading();
+        });
+
+
+
+
+        function openForm() {
+            document.getElementById("myForm").style.display = "block";
+            $(this).hide();
+        }
+
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+
+        function PonistiNarudzbu() {
+
+            if (confirm("Da li želite poništiti naruđbu")) {
+                window.location.href = $(this).attr("action");
+            }
+
+        }
+
+        /*******************OK**************/
+
+        function update() {
+
+            ToggleLoadingScreen();
+
+            this.setTimeout(DodajJosKarti(), 5000);
+
+           setTimeout( ToggleLoadingScreen(),4000);
+
+
+
+        }
+
+            function DodajJosKarti() {
+                var url = $("#HranaPretragaForma").attr("action");
+                var FormData = $("#HranaPretragaForma");
+
+
+                console.log(url);
+                console.log(FormData);
+
+
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: FormData.serialize(),
+                    success: function (data) {
+
+                        console.log("ajax data is :" + data);
+                        $("#grid").append(data).show("slow");
+                        $("#grid").append(data);
+
+                        var stranica = $("#Stranica").val();
+                        $("#Stranica").val(parseInt(stranica) + 1);
+                    }
+
+                });
+            }
+
+            function ToggleLoadingScreen() {
+                $("#LoadingGif").toggle("slow");
+            }
+
+            var ScrollAktiviran = true;
+            $(window).scroll(function (event) {
+
+
+                if ($(window).scrollTop() + $(window).height() > $(document).height() - 100 && ScrollAktiviran) {
+                        alert("near bottom!");
+                        console.log("bottom called");
+                         ScrollAktiviran = false;
+
+                        if ($("#ZadnjaStranica").is(":empty")) {
+
+                            update();
+                            setTimeout(function () {
+                                ScrollAktiviran = true;
+
+                            }, 3000);
+
+
+                        } else {
+                            console.log("Zadnja stranica dostignuta");
+
+                        }
+
+                    }
+
+
+            });
+
+
+
+
+
+
+
+
+        function AjaxReloading() {
+            $("#Jeloform").submit(function (event) {
+
+                event.preventDefault();
+               event.stopImmediatePropagation();
+                console.log("submit pritisnut");
+
+                var forma = $(this);
+                var action = $(this).attr("action");
+
+                console.log("forma karta" + forma);
+                console.log("forma karta" + action);
+
+                alert("!");
+                $.post({
+                    url: action,
+                    type: "POST",
+                    dataType: "json",
+                    data: forma.serialize(),
+                    async:"false",
+                    success: function (data) {
+                       alert("alert1");
+                        console.log("Return data je:" + data);
+                        console.log("Return data je:" + data.uspjeh);
+                        console.log("Return data je:" + data.broj_artikala);
+                       alert("alert2");
+
+                        if (data.uspjeh === true) {
+
+                            notify
+                            console.log("Return Uspjeh");
+
+                            $("#NarudzbaDugmeSpan ").html(data.broj_artikala);
+                            $("#NarudzbaDugme ").addClass("shakeClass");
+
+                            setTimeout(function () { $("#NarudzbaDugme ").removeClass("shakeClass"); }, 1000);
+                            css animacije nije moguce pustiti po zelji za
+
+
+
+                             $.ajax({
+                                    url: '@Url.Action("GetKorpaAsync", "Narudjba",new { id = @ViewData["ModelID"] })',
+                                    type: "GET",
+                                    async: "false",
+                                    success: function myfunction(data) {
+                                        $("#NarudzbaKorpa").empty();
+                                        $("#NarudzbaKorpa").html(data);
+                                    }
+                                });
+
+                        }
+                    }
+
+                });
+
+            });
+        }
+
+
+
+
+        function FiltrirajHranu() {
+
+            $("HranaPretragaForma").submit(function (event) {
+
+
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                console.log("submit pritisnut");
+
+                var forma = $(this);
+                var action = $(this).attr("action");
+
+                console.log("forma filter" + forma);
+                console.log("forma filter" + action);
+
+
+                $.ajax({
+                    url: action,
+                    type: "GET",
+                    data: forma.serialize(),
+                    success: function (data) {
+
+                        $("#grid").empty();
+                        $("#grid").html(data);
+
+
+                    }
+                });
+            });
+         }*@
+
+
+
+    </script>
+
+}

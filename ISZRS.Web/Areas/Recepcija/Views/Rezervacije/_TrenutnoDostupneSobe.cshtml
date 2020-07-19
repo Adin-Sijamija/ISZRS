@@ -1,0 +1,31 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models._TrenutnoDostupneSobeVM
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@if (Model!=null)
+{
+    <h4>U vremenskom periodu od @(Model.pocetak.ToShortDateString()) do @(Model.kraj.Date.ToShortDateString()) <br />dostupne su sljedeće sobe:</h4>
+
+    <table>
+        <tbody>
+
+            @foreach (var item in Model.SobePoTipu)
+            {
+
+                <tr>
+                    <td>
+                        <h4>Soba tipa-- <b>@(item.NazivSobe)</b> je dostupno<b> @(item.TrenutnoDostupno)/@(item.MaximalniBroj)</b></h4>
+                        @*<b> @(item.TrenutnoDostupno)</b> od mogućih <b>@(item.MaximalniBroj)</b>*@
+                    </td>
+                </tr>
+
+            }
+
+        </tbody>
+    </table>
+}
+else
+{
+    <h3>Birani datum nije validan</h3>
+}

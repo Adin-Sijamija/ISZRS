@@ -1,0 +1,48 @@
+﻿@model List<ISZRS.Web.Areas.Administracija.Controllers.KorisnikViewComponent.KorisnikInfo>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+}
+<br />
+<h2>Index zaposlenici</h2>
+<br />
+<a asp-area="Identity" asp-page="/Account/Register" class="btn btn-default">Novi Korisnik</a>
+<br />
+<br />
+
+
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th>Korisnicko ime</th>
+            <th>Ime</th>
+            <th>Prezime</th>
+            <th>JMBG</th>
+            <th>Uloge</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Count() > 0)
+        {
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.korisnik.UserName</td>
+                    <td>@item.korisnik.Ime</td>
+                    <td>@item.korisnik.Prezime</td>
+                    <td>@item.korisnik.JMBG</td>
+                    <td>Uloga</td>
+                    <td><a asp-action="DolasciNaPosao" asp-route-KorisnickoIme="@item.korisnik.UserName">Dolasci</a></td>
+                    <td>
+                        <a asp-action="UkoniKorisnika" asp-route-KorisnickoIme="@item.korisnik.UserName" class="btn btn-danger">Ukoloni Korisnika</a>
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+
+</table>

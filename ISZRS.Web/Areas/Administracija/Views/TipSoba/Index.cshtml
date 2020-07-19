@@ -1,0 +1,52 @@
+﻿@model IEnumerable<ISZR.Web.Models.TipSobe>
+
+@{
+    ViewData["Title"] = "Tipovi soba";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Tipovi soba</h2>
+
+<p>
+    <a asp-action="Create">Nova vrsta sobe</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Naziv)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Opis)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Kapacitet)
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Naziv)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Opis)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Kapacitet)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Uredi</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Detalji</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Obriši</a>
+            </td>
+            <td>
+                <a asp-action="Index" asp-controller="TipSobeNamjestaj" asp-route-TipSobeId="@item.Id" class="btn btn-default">Količine namještaja</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,114 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Areas/Identity/Pages/_Layout.cshtml";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    <form asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
+
+        <div class="col-md-4">
+            <h4>Kreiraj novog zaposlenika</h4>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+           
+            <div class="form-group">
+                <label asp-for="Input.Password"></label>
+                <input asp-for="Input.Password" class="form-control" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.ConfirmPassword"></label>
+                <input asp-for="Input.ConfirmPassword" class="form-control" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Ime"></label>
+                <input asp-for="Input.Ime" class="form-control" />
+                <span asp-validation-for="Input.Ime" class="text-danger"></span>
+
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Prezime"></label>
+                <input asp-for="Input.Prezime" class="form-control" />
+                <span asp-validation-for="Input.Prezime" class="text-danger"></span>
+
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.KorisnickoIme"></label>
+                <input asp-for="Input.KorisnickoIme" class="form-control" />
+                <span asp-validation-for="Input.KorisnickoIme" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="TipKorisnika"></label>
+                <select asp-for="TipKorisnika" class="form-control">
+                    <option value="1">Recepcionar</option>
+                    <option value="2">Logističar</option>
+                </select>
+
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.JMBG"></label>
+                <input asp-for="Input.JMBG" class="form-control" />
+                <span asp-validation-for="Input.JMBG" class="text-danger"></span>
+
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.DatumRođenja"></label>
+                <input asp-for="Input.DatumRođenja" class="form-control" />
+                <span asp-validation-for="Input.DatumRođenja" class="text-danger"></span>
+
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="SlikaFile"></label>
+                <input type="file" asp-for="SlikaFile" />
+            </div>
+
+            <button type="submit" class="btn btn-default">Snimi</button>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-4">
+            <h3> Početni ugovor zaposlenika </h3>
+            <div class="form-group">
+                <label asp-for="Ugovor.DatumPocetkaUgovora"></label>
+                <input asp-for="Ugovor.DatumPocetkaUgovora" class="form-control" />
+                <span asp-validation-for="Ugovor.DatumPocetkaUgovora" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ugovor.DatumZavrsetkaUgovora"></label>
+                <input asp-for="Ugovor.DatumZavrsetkaUgovora" class="form-control" />
+                <span asp-validation-for="Ugovor.DatumZavrsetkaUgovora" class="text-danger"></span>
+
+            </div>
+            <div class="form-group">
+                <label asp-for="Ugovor.Satnica"></label>
+                <input asp-for="Ugovor.Satnica"  class="form-control"/>
+                <span asp-validation-for="Ugovor.Satnica" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ugovor.PrekovremenaSatnica"></label>
+                <input asp-for="Ugovor.PrekovremenaSatnica"  class="form-control" />
+                <span asp-validation-for="Ugovor.PrekovremenaSatnica" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ugovor.BrojRadnihSati"></label>
+                <input asp-for="Ugovor.BrojRadnihSati"  class="form-control" />
+                <span asp-validation-for="Ugovor.BrojRadnihSati" class="text-danger"></span>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

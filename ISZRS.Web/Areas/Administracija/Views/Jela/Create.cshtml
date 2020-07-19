@@ -1,0 +1,70 @@
+﻿@model ISZR.Web.Models.Hrana
+
+@{
+    ViewData["Title"] = "Novo jelo";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Novo jelo</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Naziv" class="control-label"></label>
+                <input asp-for="Naziv" class="form-control" />
+                <span asp-validation-for="Naziv" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Opis" class="control-label"></label>
+                <input asp-for="Opis" class="form-control" />
+                <span asp-validation-for="Opis" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cijena" class="control-label"></label>
+                <input asp-for="Cijena" class="form-control" />
+                <span asp-validation-for="Cijena" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group">
+                <label>Slika</label>
+                <input type="file" value="Dodaj Sliku" name="Slika" onchange="readURL(this);" />
+                <img id="SlikaPrikaz" src="#" alt="Odaberi sliku" />
+
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Snimi" class="btn btn-success" />
+                
+            </div>
+
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-default">Nazad</a>
+</div>
+
+
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#SlikaPrikaz')
+                    .attr('src', e.target.result)
+                    .width(200)
+                    .height(200);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+

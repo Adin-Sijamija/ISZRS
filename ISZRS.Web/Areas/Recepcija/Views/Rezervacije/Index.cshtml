@@ -1,0 +1,417 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.RezervacijeIndexModal
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+
+
+    DateTime pocetak = ViewBag.pocetak?? DateTime.Now;
+    DateTime kraj = ViewBag.kraj ?? DateTime.Now.AddDays(7);
+
+    DateTime sada = DateTime.Now.AddHours(-5);
+}
+
+
+
+<h2>Sve rezervacije</h2>
+<hr />
+<div id="FilterRez" class="collapse">
+    <h4>Filter</h4>
+    <form asp-action="Index" asp-controller="Rezervacije">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Početak:</label>
+                    <input class="form-control" value="@pocetak.ToString("yyyy-MM-dd")" type="date" name="pocetak" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Kraj:</label>
+                    <input class="form-control" value="@kraj.ToString("yyyy-MM-dd")" type="date" name="kraj" />
+                </div>
+            </div>
+        </div>
+        @*<div class="row">
+                <label class="control-label">Tip Rezervacija:</label>
+            </div>*@
+        <input type="submit" value="Pretrazi" class="btn btn-primary" />
+    </form>
+    <a asp-action="IndexPrijasnje" class="pull-right">Pregledaj prijašnje rezervacije</a>
+    <br />
+
+</div>
+
+<div class="pull-right">
+    <a data-toggle="collapse" href="#FilterRez" role="button" aria-expanded="false" aria-controls="FilterRez">
+        <span class="glyphicon glyphicon-cog">
+            Opcije
+        </span>
+    </a>
+</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <td>Početak rezervacije</td>
+            <td>Kraj rezervacije</td>
+            <td>Rezervisao</td>
+            <td>Status</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.RedRez)
+        {
+            if (item.JeValidnaRezervacija == false)
+            {
+
+                <tr class="danger clickable" data-toggle="collapse" data-target="#accordion@(item.Rezervacija.RezervacijaId)">
+                    <td>@(item.Rezervacija.DatumPocetkaRezerviranja.ToShortDateString() + "--" + item.Rezervacija.DatumPocetkaRezerviranja.ToShortTimeString())</td>
+                    <td>@(item.Rezervacija.DatumZavrsetkaRezerviranja.ToShortDateString() + "--" + item.Rezervacija.DatumZavrsetkaRezerviranja.ToShortTimeString())</td>
+
+
+                    <td>@(item.Rezervacija.GlavniGost == null ? "Nema glavnog gosta" : item.Rezervacija.GlavniGost.PunoIme)</td>
+
+
+
+                    <td>
+                        <span style="color:red">PROBLEM</span>
+                    </td>
+
+                </tr>
+
+                <tr id="InfoRed">
+                    <td colspan="6">
+                        <div id="accordion@(item.Rezervacija.RezervacijaId)" class="collapse alert alert-danger">
+                            @if (item.NemaSoba)
+                            {
+                                <p>
+
+                                    <div>
+                                        <span>Rezervacija nema soba,</span><a asp-action="DodajSobe" asp-controller="Rezervacije" asp-route-id="@item.Rezervacija.RezervacijaId"> dodajte ih sad</a>
+                                    </div>
+                                </p>
+
+                            }
+                            else
+                            {
+                                @if (item.GlavniGostNedostaje)
+                                {
+                                    <p>
+
+                                        <div>
+                                            <span>Rezervacija nema glavnog gosta,</span><a asp-action="DodajGlavnogGosta" asp-controller="Gosti" asp-route-rezID="@item.Rezervacija.RezervacijaId"> dodajte gosta sad.</a>
+                                        </div>
+
+                                    </p>
+                                }
+
+                                @if (item.ImaSlobodihSoba)
+                                {
+                                    <p>
+
+                                        <div>
+                                            <span>Rezervacija ima slobodnih soba,</span><a asp-action="DodajGoste" asp-controller="Gosti" asp-route-id="@item.Rezervacija.RezervacijaId"> uredite ih sad.</a>
+                                        </div>
+                                    </p>
+
+                                }
+                            }
+
+
+                            <p><a class="btn btn-link" asp-action="Info" asp-controller="Rezervacije" asp-route-id="@item.Rezervacija.RezervacijaId"> Pregled Rezervacije </a></p>
+
+
+                        </div>
+                    </td>
+                </tr>
+
+            }
+            else
+            {
+
+
+
+                @if (item.Rezervacija.RezervacijaAktivna && item.Rezervacija.DatumZavrsetkaRezerviranja < DateTime.Now)
+                {
+                    <tr class="info clickable" data-toggle="collapse" data-target="#accordion@(item.Rezervacija.RezervacijaId)">
+                        <td>@(item.Rezervacija.DatumPocetkaRezerviranja.ToShortDateString() + "--" + item.Rezervacija.DatumPocetkaRezerviranja.ToShortTimeString())</td>
+                        <td>@(item.Rezervacija.DatumZavrsetkaRezerviranja.ToShortDateString() + "--" + item.Rezervacija.DatumZavrsetkaRezerviranja.ToShortTimeString())</td>
+
+
+                        <td>@(item.Rezervacija.GlavniGost == null ? "Nema glavnog gosta" : item.Rezervacija.GlavniGost.PunoIme)</td>
+
+
+
+                        <td>
+                            <span style="color:gray">ZAVRŠI</span>
+                        </td>
+
+                    </tr>
+
+                    <tr id="InfoRed">
+
+
+                        <td colspan="6">
+                            <div id="accordion@(item.Rezervacija.RezervacijaId)" class="collapse alert alert-info">
+
+                                <p><a class="btn btn-link" asp-action="Info" asp-controller="Rezervacije" asp-route-id="@item.Rezervacija.RezervacijaId">Završi rezervaciju</a></p>
+
+                                <p><a class="btn btn-link" asp-action="Info" asp-controller="Rezervacije" asp-route-id="@item.Rezervacija.RezervacijaId"></a></p>
+                            </div>
+                        </td>
+                    </tr>
+                    continue;
+
+                }
+
+                <tr class="success clickable" data-toggle="collapse" data-target="#accordion@(item.Rezervacija.RezervacijaId)">
+                    <td>@(item.Rezervacija.DatumPocetkaRezerviranja.ToShortDateString() + "--" + item.Rezervacija.DatumPocetkaRezerviranja.ToShortTimeString())</td>
+                    <td>@(item.Rezervacija.DatumZavrsetkaRezerviranja.ToShortDateString() + "--" + item.Rezervacija.DatumZavrsetkaRezerviranja.ToShortTimeString())</td>
+                    <td>@(item.Rezervacija.GlavniGost == null ? "Nema glavnog gosta" : item.Rezervacija.GlavniGost.PunoIme)</td>
+
+
+
+                    @if (item.Rezervacija.RezervacijaAktivna)
+                    {
+                        <td>
+                            <span style="color:green">AKTIVNA</span>
+                        </td>
+                    }
+                    else
+                    {
+
+                        @if (item.Rezervacija.RezervacijaAktivna == false && item.Rezervacija.DatumPocetkaRezerviranja < DateTime.Now)
+                        {
+                            <td>
+                                <span style="color:blue">CEKANJE</span>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <span style="color:green">OK</span>
+                            </td>
+                        }
+                    }
+
+                </tr>
+                <tr id="InfoRed">
+
+
+                    <td colspan="6">
+                        <div id="accordion@(item.Rezervacija.RezervacijaId)" class="collapse alert alert-success">
+                            @if (item.Rezervacija.RezervacijaAktivna)
+                            {
+                                if ((item.Rezervacija.DatumZavrsetkaRezerviranja - DateTime.Now).Days > 2)
+                                {
+                                    <p>Rezervacija aktivna još za: @((item.Rezervacija.DatumZavrsetkaRezerviranja - DateTime.Now).Days) dana</p>
+
+                                }
+                                else
+                                {
+                                    <p>Rezervacija aktivna još za: @((item.Rezervacija.DatumZavrsetkaRezerviranja - DateTime.Now).Hours) sati</p>
+
+                                }
+
+                            }
+                            else
+                            {
+                                @if (item.Rezervacija.RezervacijaAktivna == false && item.Rezervacija.DatumPocetkaRezerviranja > sada)
+                                {
+                                    <p><a class="btn btn-link" asp-action="AktivirajRezervaciju" asp-controller="Rezervacije" asp-route-id="@item.Rezervacija.RezervacijaId">Aktiviraj Rezervaciju</a></p>
+
+                                }
+                                else
+                                {
+                                    if ((item.Rezervacija.DatumPocetkaRezerviranja - DateTime.Now).Days > 2)
+                                    {
+                                        <p>Rezervacija zapocinje za: @((item.Rezervacija.DatumPocetkaRezerviranja - DateTime.Now).Days) dana</p>
+
+                                    }
+                                    else
+                                    {
+                                        <p>Rezervacija zapocinje za: @((item.Rezervacija.DatumPocetkaRezerviranja - DateTime.Now).Hours)  sati</p>
+
+                                    }
+
+                                }
+                            }
+
+
+
+                            <p><a class="btn btn-link" asp-action="Info" asp-controller="Rezervacije" asp-route-id="@item.Rezervacija.RezervacijaId"> Pregled Rezervacije </a></p>
+                        </div>
+                    </td>
+                </tr>
+
+
+            }
+
+            @*@if (item.Rezervacija.RezervacijaAktivna && item.Rezervacija.DatumZavrsetkaRezerviranja < DateTime.Now)
+            {
+                <tr class="danger clickable" data-toggle="collapse" data-target="#accordion@(item.Rezervacija.RezervacijaId)">
+                    <td>@(item.Rezervacija.DatumPocetkaRezerviranja.ToShortDateString() + "--" + item.Rezervacija.DatumPocetkaRezerviranja.ToShortTimeString())</td>
+                    <td>@(item.Rezervacija.DatumZavrsetkaRezerviranja.ToShortDateString() + "--" + item.Rezervacija.DatumZavrsetkaRezerviranja.ToShortTimeString())</td>
+
+
+                    <td>@(item.Rezervacija.GlavniGost == null ? "Nema glavnog gosta" : item.Rezervacija.GlavniGost.PunoIme)</td>
+
+
+
+                    <td>
+                        <span style="color:gray">Završiti</span>
+                    </td>
+
+                </tr>
+
+                <tr id="InfoRed">
+
+
+                    <td colspan="6">
+                        <div id="accordion@(item.Rezervacija.RezervacijaId)" class="collapse alert alert-success">
+
+                            <p><a class="btn btn-link" asp-action="Info" asp-controller="Rezervacije" asp-route-id="@item.Rezervacija.RezervacijaId">Završi rezervaciju</a></p>
+
+                            <p><a class="btn btn-link" asp-action="Info" asp-controller="Rezervacije" asp-route-id="@item.Rezervacija.RezervacijaId"></a></p>
+                        </div>
+                    </td>
+                </tr>
+
+            }*@
+
+
+        }
+    </tbody>
+
+
+
+
+
+
+
+
+
+</table>
+
+
+
+
+
+
+@section Scripts{
+    <script>
+        $('.collapse').on('show.bs.collapse', function () {
+            $('.collapse.in').collapse('hide');
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+@*<table class="table table-hover">
+        <thead>
+            <tr>
+                <td>Pocetak Rezervacije</td>
+                <td>Kraj Rezervacije</td>
+                <td>Rezervisao</td>
+                <td>Status</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var ok = true;
+                var Gost = true;
+                var Sobe = true;
+                if (item.GlavniGost == null)
+                {
+                    ok = false;
+                    Gost = false;
+                }
+
+                if (item.ZaduzeneSobe == null)
+                {
+                    ok = false;
+                    Sobe = false;
+                }
+
+                if (ok)
+                {
+                    <tr class="success">
+                        <td>@(item.DatumPocetkaRezerviranja.ToShortDateString() + "--" + item.DatumPocetkaRezerviranja.ToShortTimeString())</td>
+                        <td>@(item.DatumZavrsetkaRezerviranja.ToShortDateString() + "--" + item.DatumZavrsetkaRezerviranja.ToShortTimeString())</td>
+                        <td>@item.GlavniGost.PunoIme</td>
+                        <td>
+                            <span style="color:green">OK</span>
+                        </td>
+                        <td>
+                            <a asp-action="Info" asp-controller="Rezervacije" asp-route-id="@item.RezervacijaId" class="btn btn-info">INFO</a>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="danger clickable" data-toggle="collapse" data-target="#accordion@(item.RezervacijaId)">
+                        <td>@(item.DatumPocetkaRezerviranja.ToShortDateString() + "--" + item.DatumPocetkaRezerviranja.ToShortTimeString())</td>
+                        <td>@(item.DatumZavrsetkaRezerviranja.ToShortDateString() + "--" + item.DatumZavrsetkaRezerviranja.ToShortTimeString())</td>
+                        @if (item.GlavniGost != null)
+                        {
+                            <td>@item.GlavniGost.PunoIme</td>
+                        }
+                        else
+                        {
+                            <td>Glavni Gost nedostoja</td>
+                        }
+
+                        <td>
+                            @*<button data-toggle="collapse" data-target="#accordion@(item.RezervacijaId)" class="clickable">
+    <span style="color:red">PROBLEM</span>
+     </button>
+
+                        </td>
+    <td>
+        <a asp-action="Info" asp-controller="Rezervacije" asp-route-id="@item.RezervacijaId" class="btn btn-info">INFO</a>
+    </td>
+                    </tr>
+
+    <tr>
+        <td colspan="8">
+            <div id="accordion@(item.RezervacijaId)" class="collapse Oznacena">
+
+                @if (Gost == false)
+                {
+                    <span>Glavni gost ne dostaje, dodajte ga sad</span>
+                    <a class="btn btn-info" asp-action="DodajSobe" asp-controller="Gosti" asp-route-rezID="@item.RezervacijaId">
+                        Dodaj gosta
+                    </a>
+                    <br />
+
+                }
+
+                @if (Sobe == false)
+                {
+                    <span>Rezervacija nema sobe,dodajte ih sad</span>
+                    <a class="btn btn-info" asp-action="DodajSobe" asp-controller="Rezervacije" asp-route-id="@item.RezervacijaId">
+                        Dodaj Sobe
+                    </a>
+                }
+            </div>
+        </td>
+    </tr>
+
+
+                }
+
+
+            }
+        </tbody>
+    </table>*@

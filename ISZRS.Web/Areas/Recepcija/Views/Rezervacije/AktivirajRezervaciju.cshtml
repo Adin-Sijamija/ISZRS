@@ -1,0 +1,72 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.AktivirajRezervacijuVM
+@{
+    ViewData["Title"] = "Aktiviraj Rezervaciju";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Aktiviraj Rezervaciju</h2>
+<hr />
+<div class="container">
+    <div class="row">
+
+        <div class="col-lg-6">
+            <dl>
+                <dt>Datum Pocetka</dt>
+                <dd>@Model.Rezervacija.DatumPocetkaRezerviranja</dd>
+
+                <dt>Datum Završetka</dt>
+                <dd>@Model.Rezervacija.DatumPocetkaRezerviranja</dd>
+
+                <dt>Rezervisao</dt>
+                <dd>@Model.Rezervacija.GlavniGost.PunoIme</dd>
+
+
+            </dl>
+            <br />
+            <a asp-action="AktivirajRezervacijuConfirm" sp-controller="Rezervacije" asp-route-id="@Model.Rezervacija.RezervacijaId" class="btn btn-success">Aktiviraj Rezervaciju</a>
+
+        </div>
+
+
+        <div class="col-lg-6">
+            @foreach (var item in Model.Sobe)
+            {
+
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">Soba:@item.Sobe.BrojSobe</div>
+                    <div class="panel-body">
+                        <p>Tip sobe:@item.Sobe.TipSobe.Naziv</p>
+                        <h4>Ima Goste:</h4>
+                    </div>
+                    <!-- Table -->
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>Ime</th>
+                                <th>Drzava</th>
+                                <th>Grad</th>
+                                <th>Adresa</th>
+                            </tr>
+                        </tbody>
+                        @foreach (var gost in item.GostaSoba)
+                        {
+                        <tr>
+                            <td>@gost.Gosti.PunoIme</td>
+                            <td>@gost.Gosti.Gradovi.Drzave.Naziv</td>
+                            <td>@gost.Gosti.Gradovi.Naziv</td>
+                            <td>@gost.Gosti.Adresa</td>
+                        </tr>
+                        }
+                    </table>
+                </div>
+            }
+
+
+ 
+        </div>
+
+    </div>
+</div>
+

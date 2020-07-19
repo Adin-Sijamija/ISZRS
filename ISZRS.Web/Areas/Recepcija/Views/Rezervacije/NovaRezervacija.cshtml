@@ -1,0 +1,305 @@
+﻿@model ISZRS.Data.Models.Rezervacije
+
+@{
+    ViewData["Title"] = "Nova Rrezervacija";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+
+    var Zaposlenik = User.Identity.Name; ;
+}
+
+@{
+    DateTime danas = DateTime.Now.AddDays(1);
+    DateTime plus7 = DateTime.Now.AddDays(8);
+}
+
+<h2>Nova rezeracija</h2>
+
+<h4>Korak I: Odabir datuma</h4>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form id="NovaRezervacija" update-link="@Url.Action("_TrenutnoDostupneSobe","Rezervacije")" asp-action="NovaRezervacija" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="DatumPocetkaRezerviranja" class="control-label"></label>
+                <input id="DatumPocetkaRezerviranja" asp-for="DatumPocetkaRezerviranja" class="form-control" value="@danas.ToString("yyyy-MM-ddThh:mm")" />
+                <span asp-validation-for="DatumPocetkaRezerviranja" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DatumZavrsetkaRezerviranja" class="control-label"></label>
+                <input id="DatumZavrsetkaRezerviranja" asp-for="DatumZavrsetkaRezerviranja" class="form-control" value="@plus7.ToString("yyyy-MM-ddThh:mm")" />
+                <span asp-validation-for="DatumZavrsetkaRezerviranja" class="text-danger"></span>
+            </div>
+            <div>
+                <input type="text" asp-for="Zaposlenik" hidden="hidden" value="@Zaposlenik" />
+            </div>
+            
+
+            <input type="submit" class="btn btn-success" value="Napravi rezervaciju" />
+        </form>
+
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-6">
+
+
+        <div id="Sobe">
+            <h4>Unesite datum rezerviranja kako biste vidjeli dostupne sobe</h4>
+        </div>
+
+
+    </div>
+    <br />
+
+
+</div>
+
+
+<br />
+<br />
+<br />
+
+<div>
+    <a asp-action="Index" asp-controller="Pocetna" class="btn btn-default">Nazad</a>
+</div>
+
+
+
+@section Scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation/dist/additional-methods.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            var Pocetak = Date.parse($("#DatumPocetkaRezerviranja").val());
+            var Kraj = Date.parse($("#DatumZavrsetkaRezerviranja").val());
+            console.log(Pocetak);
+            console.log(Kraj);
+
+            if (isNaN(Pocetak) === false) {
+
+                pocetakOk = true;
+                GetPartial();
+            }
+            if (isNaN(Kraj) === false) {
+
+                krajOk = true;
+                GetPartial();
+            }
+
+        });
+
+        var pocetakOk = false;
+        var krajOk = false;
+
+
+        //$("#DatumPocetkaRezerviranja").change(function () {
+
+        //    var timestamp = Date.parse($(this).val());
+        //    console.log(timestamp);
+
+        //    if (isNaN(timestamp) === false) {
+
+        //        pocetakOk = true;
+        //        GetPartial();
+        //    }
+        //});
+
+        //$("#DatumZavrsetkaRezerviranja").change(function () {
+
+        //    var timestamp = Date.parse($(this).val());
+        //    console.log(timestamp);
+
+        //    if (isNaN(timestamp) === false) {
+        //        krajOk = true;
+        //        GetPartial();
+        //        console.log("krajOk::" + krajOk + " pocetak " + pocetakOk);
+        //    }
+        //});
+
+        $("input.form-control").on("change", function () {
+
+
+            var Pocetak = Date.parse($("#DatumPocetkaRezerviranja").val());
+            var Kraj = Date.parse($("#DatumZavrsetkaRezerviranja").val());
+            console.log(Pocetak);
+            console.log(Kraj);
+
+
+            //var TrenutnoVrijeme = new Date();
+            //TrenutnoVrijeme.setDate(TrenutnoVrijeme.getDate() - 1);
+
+            //if (pocetakOk < TrenutnoVrijeme || kraj < TrenutnoVrijeme) {
+            //    pocetakOk = false;
+            //    krajOk = false;
+            //}
+
+
+            if (isNaN(Pocetak) === false) {
+
+                pocetakOk = true;
+                GetPartial();
+            }
+            if (isNaN(Kraj) === false) {
+
+                krajOk = true;
+                GetPartial();
+            }
+
+        });
+
+        function GetPartial() {
+
+            var datumPocetka = $("#DatumPocetkaRezerviranja").val();
+            var datumZabvrsteka = $("#DatumZavrsetkaRezerviranja").val();
+            console.log("GLAVNA FUNK krajOk::" + krajOk + " pocetak " + pocetakOk);
+
+            if (krajOk && pocetakOk && datumPocetka < datumZabvrsteka) {
+                pocetakOk = false;
+                krajOk = false;
+
+                var Forma = $("#NovaRezervacija");
+                var Action = $("#NovaRezervacija").attr("update-link");
+
+                $.get({
+                    url: Action,
+                    async: "true",
+                    data: Forma.serialize(),
+                    success: function (data) {
+                        $("#Sobe").empty();
+                        $("#Sobe").html(data).fadeIn(2000);
+
+                    }
+                });
+            }
+        }
+
+
+
+
+
+        $(function () {
+
+
+            jQuery.validator.addMethod("VeciOdPocetkaRezervacije", function (value, element, param) {
+
+                var pocetak = $("#DatumPocetkaRezerviranja").val();
+                var ovo = value;
+
+                var RezStart = new Date(pocetak);
+                var Ovo = new Date(ovo);
+                return RezStart <= Ovo;
+            }, "Datum mora biti veci od pocetka rezervacije ");
+
+
+            jQuery.validator.addMethod("ManjiOdZavrsetkaRezervacije", function (value, element, param) {
+
+                var kraj = $("#DatumZavrsetkaRezerviranja").val();
+                var ovo = value;
+
+                var RezKraj = new Date(kraj);
+                var Ovo = new Date(ovo);
+                return Ovo <= RezKraj;
+            }, "Datum mora biti manji od kraja rezervacije");
+
+
+            //Dnevno validation Start
+            $("#NovaRezervacija").validate({
+                rules: {
+                    DatumPocetkaRezerviranja: {
+                        required: true,
+                        ManjiOdZavrsetkaRezervacije: true
+
+                    },
+                    DatumZavrsetkaRezerviranja: {
+                        required: true,
+                        VeciOdPocetkaRezervacije: true
+
+                    }
+                }
+
+
+            });
+
+
+            $.extend($.validator.messages, { required: "Obavezno polje" });
+
+        });
+
+
+
+
+
+
+
+
+
+
+                //var pocetakOk = false;
+                //var krajOk = false;
+                //$("#DatumPocetkaRezerviranja").change(function () {
+
+                //    var timestamp = Date.parse($(this).val());
+                //    console.log(timestamp);
+
+                //    if (isNaN(timestamp) === false) {
+                //        var d = new Date(timestamp);
+                //        console.log($(this).val());
+
+
+                //        $("#pocetak").val($(this).val());
+
+                //        pocetakOk = true;
+                //        GetPartial();
+                //    }
+                //});
+
+                //$("#DatumZavrsetkaRezerviranja").change(function () {
+
+                //    var timestamp = Date.parse($(this).val());
+                //    console.log(timestamp);
+
+                //    if (isNaN(timestamp) === false) {
+                //        var d = new Date(timestamp);
+                //        console.log($(this).val());
+
+                //        krajOk = true;
+                //        //$("#kraj").val($(this).val());
+                //        $("#kraj").val(d);
+                //        GetPartial();
+                //        console.log("krajOk::" + krajOk + " pocetak " + pocetakOk);
+                //    }
+                //});
+
+
+                //function GetPartial() {
+
+                //    var datumPocetka = $("#DatumPocetkaRezerviranja").val();
+                //    var datumZabvrsteka = $("#DatumZavrsetkaRezerviranja").val();
+                //    console.log("GLAVNA FUNK krajOk::" + krajOk + " pocetak " + pocetakOk);
+
+                //    if (krajOk&&pocetakOk) {
+                //        pocetakOk = false;
+                //        krajOk = false;
+
+                //        var Forma = $("#PartialForma");
+                //        var Action = $("#PartialForma").attr("action");
+
+                //        $.get({
+                //            url: Action,
+                //            async: "true",
+                //            success: function (data) {
+                //                $("#Sobe").empty();
+                //                $("#Sobe").html(data).show("slow");
+
+                //            }
+                //        });
+                //    }
+                //}
+
+
+    </script>
+
+}

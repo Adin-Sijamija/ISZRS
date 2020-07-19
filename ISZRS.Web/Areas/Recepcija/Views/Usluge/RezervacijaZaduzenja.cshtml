@@ -1,0 +1,80 @@
+﻿@model IEnumerable<ISZR.Web.Models.Zaduzivanja>
+@{
+    ViewData["Title"] = "Rezervacija Zaduzenja";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+
+}
+
+
+@{
+
+    string RezID = Context.Request.Query["rezId"];
+}
+
+@if (Model.Count() > 0)
+{
+
+    <h2>Usluge rezervacije broj:@Model.First().RezervacijaId</h2>
+    <h4>Aktivna od:@Model.First().Rezervacije.DatumPocetkaRezerviranja.ToShortDateString() do :@Model.First().Rezervacije.DatumZavrsetkaRezerviranja.ToShortDateString() </h4>
+    <hr />
+
+    <table class="table table-hover table table-responsive">
+        <thead>
+            <tr>
+                <th>Naziv</th>
+                <th>Datum početka</th>
+                <th>Datum završetka</th>
+                <th>Cijena</th>
+                <th>Status</th>
+                <th>Info</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Usluga.Naziv</td>
+                    <td>@item.PocetakZaduzivanja </td>
+                    <td>@item.KrajZaduzivanja</td>
+                    <td>@item.UkupnaCijena</td>
+                    <td>
+                        @if (item.PocetakZaduzivanja > DateTime.Now)
+                        {
+                            <span>Na čekanju</span>
+                        }
+
+                        @if (item.PocetakZaduzivanja < DateTime.Now &&item.KrajZaduzivanja>DateTime.Now)
+                        {
+                            <span>Aktivna</span>
+                        }
+                        @if (item.KrajZaduzivanja < DateTime.Now)
+                        {
+                            <span>Zavrsena</span>
+                        }
+                    </td>
+                    <td><a asp-action="ZaduzivanjeInfo" asp-route-ZaduzenjeID="@item.Id" >Info</a></td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+    <a asp-action="Index" asp-route-rezId="@RezID" class="btn btn-success">Dodaj usluge</a>
+
+}
+else
+{
+
+    <h2>Rezervacija nema usluga</h2>
+    <hr />
+    <a asp-action="Index" asp-route-rezId="@RezID" class="btn btn-success">Dodaj usluge</a>
+    <br />
+    <br />
+    <br />
+    <br />
+    <a asp-action="Info" asp-controller="Rezervacije" asp-route-id="@RezID" class="btn btn-default">Nazad </a>
+}
+
+
+

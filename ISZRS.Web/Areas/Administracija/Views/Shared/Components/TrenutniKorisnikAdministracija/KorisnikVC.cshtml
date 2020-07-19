@@ -1,0 +1,32 @@
+﻿@*@model ISZRS.Web.Areas.Identity.Data.ZaposlenikISZRSWebUser*@
+
+@model ISZRS.Web.Areas.Administracija.Controllers.KorisnikViewComponent.KorisnikInfo 
+
+
+
+@{
+
+}
+<div class="SidebarText">
+    <h3>Trenutni korisnik</h3>
+    <br />
+    <p>Ime: @Model.korisnik.Ime</p>
+    <p>Prezime: @Model.korisnik.Prezime</p>
+    <p>Korisničko ime: @Model.korisnik.UserName</p>
+    <p>JMBG: @Model.korisnik.JMBG</p>
+    <p>Datum rođenja: @Model.korisnik.DatumRođenja.ToShortDateString()</p>
+    <p>Uloge: @Model.Uloge</p>
+    <br />
+    @if (Model.korisnik.Slika != null)
+    {
+        <img src="data:image;base64,@System.Convert.ToBase64String(Model.korisnik.Slika)"class="profilePicture"  >
+
+    }
+    else
+    {
+        <img src="~/images/defaultKorisnik.jpeg" class="profilePicture" >
+
+    }
+
+
+</div>

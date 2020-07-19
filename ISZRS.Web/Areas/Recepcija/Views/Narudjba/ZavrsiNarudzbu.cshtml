@@ -1,0 +1,256 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.ZavrsiNarudzbuModel
+
+@{
+    ViewData["Title"] = "Zavrsi Narudzbu";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Završi narudžbu</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6">
+            <form hidden="hidden">
+
+                <input type="date" id="RezPocetak" name="RezPocetak" class="form-control" asp-for="@Model.Rezervacija.DatumPocetkaRezerviranja" />
+                <input type="date" id="RezKraj" name="RezKraj" class="form-control" asp-for="@Model.Rezervacija.DatumZavrsetkaRezerviranja" />
+
+                @*<p>@Model.Rezervacija.DatumZavrsetkaRezerviranja.ToLongDateString()</p>
+                    <input type="date" value="@Model.Rezervacija.DatumZavrsetkaRezerviranja.ToShortDateString() " />*@
+
+            </form>
+            <h3>
+                Odaberite datum dostave
+            </h3>
+
+            <form asp-action="ZavrsiNarudzbuPost"  method="post" id="DostavaForma">
+                <div class="form-group">
+                    <label>Datum dostave:</label>
+                    <input type="date" id="DatumDostave" name="DatumDostave" class="form-control" value="@Model.Rezervacija.DatumPocetkaRezerviranja.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="form-group">
+                    <label>Vrijeme dostave:</label>
+                    <input type="time" id="VrijemeDostave" name="VrijemeDostave" class="form-control" />
+                </div>
+                <input value="@Model.Narudzba.Id" name="narudzbaid" hidden="hidden" />
+                <input type="submit" value="Snimi" class="btn btn-sm btn-success" />
+                <a asp-action="PrekiniNarudzbu" asp-route-id="@Model.Narudzba.Id" class="btn btn-sm btn-danger">Prekini</a>
+            </form>
+        </div>
+
+        <div class="col-lg-6 col-md-6 col-sm-6">
+            <br />
+            <br />
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>Naziv</th>
+                        <th>Količina</th>
+                        <th>Cijena</th>
+                        <th>Ukupna Cijena</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Artikli)
+                    {
+                        <tr>
+                            <td>@item.Hrana.Naziv</td>
+                            <td>@item.Kolicina</td>
+                            <td>@item.Hrana.Cijena</td>
+                            <td>@(item.Kolicina * item.Hrana.Cijena)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <br />
+            <h4 class="pull-right">Ukupna cijena: <span style="color:green">@Model.Narudzba.UkupnaCijena</span> KM</h4>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+
+@section Scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation/dist/additional-methods.js"></script>
+    <script>
+    @*@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}*@
+
+        //if ($.validator) {
+        //    // $.validator is defined
+        //    alert("TEST");
+        //}
+
+        $(function () {
+            document.getElementById('DatumDostave').valueAsDate = new Date();
+            var dt = new Date();
+            var sati =String( dt.getHours());
+            var minuta =String(dt.getMinutes());
+
+            console.log(sati);
+            console.log(minuta);
+
+            if (sati.length<2) {
+                sati = '0' + sati;
+                console.log(sati);
+            }
+            if (minuta.length < 2) {
+                minuta = '0' + minuta;
+                console.log(minuta);
+
+            }
+
+
+
+           // var time = dt.getHours() + ":" + dt.getMinutes();
+            var time = sati + ":" + minuta;
+            $("#VrijemeDostave").val(time);
+        });
+
+        $(function () {
+
+            jQuery.validator.addMethod("VeciOdPocetkaRezervacije", function (value, element, param) {
+
+                var pocetak = $("#RezPocetak").val();
+                var ovo = value;
+
+                var RezStart = new Date(pocetak);
+                var Ovo = new Date(ovo);
+                return RezStart <= Ovo;
+            }, "Datum dostave mora biti veca/jednaka od početka rezervacije "+'@Model.Rezervacija.DatumPocetkaRezerviranja.ToShortDateString()');
+            jQuery.validator.addMethod("ManjiOdZavrsetkaRezervacije", function (value, element, param) {
+
+                var kraj = $("#RezKraj").val();
+                var ovo = value;
+
+                var RezKraj = new Date(kraj);
+                var Ovo = new Date(ovo);
+                return Ovo <= RezKraj;
+            }, "Datum dostave mora biti manja/jednaka od kraja rezervacije "+'@Model.Rezervacija.DatumZavrsetkaRezerviranja.ToShortDateString()');
+
+
+
+            jQuery.validator.addMethod("VeciOdDanas", function (value, element, param) {
+
+                var ovo = value;
+
+                var Danas = new Date;
+                var Ovo = new Date(ovo);
+
+
+
+
+
+                var todayTimeStamp = +new Date;
+                var oneDayTimeStamp = 1000 * 60 * 60 * 24;
+                var diff = todayTimeStamp - oneDayTimeStamp;
+                var yesterdayDate = new Date(diff);
+
+
+                return Ovo > yesterdayDate;
+
+
+
+
+            }, "Datum dostave usluge mora biti veci/jednak današnjem datumu");
+
+
+
+            jQuery.validator.addMethod("VrijemeOK", function (value, element, param) {
+
+                var datumdostave = $("#DatumDostave").val();
+                var DatumDostave = new Date(datumdostave);
+                var Danas = new Date;
+
+                var IstiDatum = false;
+
+                console.log(datumdostave);
+                console.log(Danas);
+
+                if (DatumDostave>Danas) {
+                    return true;
+                }
+
+
+
+                if (DatumDostave.getFullYear() === Danas.getFullYear()) {
+
+                    if (DatumDostave.getMonth() === Danas.getMonth()) {
+
+                        if (DatumDostave.getDay() === Danas.getDay()) {
+                            IstiDatum = true;
+                        }
+
+                    }
+                }
+
+
+                if (IstiDatum) {
+                    console.log("DANAS DOSTAVA");
+
+                    var Time = value;
+                    var satiDostave = Time.substring(0, 2);
+                    var minuta = Time.substring(3, 5);
+
+                    var sadSati =  String(Danas.getHours());
+                    var sadMin = String( Danas.getMinutes());
+
+
+
+                    console.log(satiDostave);
+                    console.log(minuta);
+
+
+
+                    console.log(sadSati);
+                    console.log(sadMin);
+
+
+
+                    if (sadSati > satiDostave) {
+                        return false;
+                    }
+
+                    if (sadSati === satiDostave) {
+                        if (sadMin > minuta) {
+                            return false;
+                        }
+
+                    }
+
+                }
+                return true;
+            }, "Vrijeme dostave mora biti veće od trenutnog vremena!");
+
+
+
+
+            $("#DostavaForma").validate({
+                rules: {
+                    DatumDostave: {
+                        required: true,
+                        VeciOdPocetkaRezervacije: true,
+                        ManjiOdZavrsetkaRezervacije: true,
+                        VeciOdDanas: true
+
+                    },
+                    VrijemeDostave: {
+                        required: true,
+                        VrijemeOK:true
+                    }
+                }
+
+            });
+
+            $.extend($.validator.messages, { required: "Obavezno polje" });
+
+        });
+
+    </script>
+}
+
+

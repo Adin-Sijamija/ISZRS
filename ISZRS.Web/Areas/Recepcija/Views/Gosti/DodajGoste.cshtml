@@ -1,0 +1,787 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.DodajGosteVM
+
+@{
+    ViewData["Title"] = "Dodavanje Gostiju";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+}
+<br />
+<h2>Korak III: Dodavanje gostiju</h2>
+
+
+<div hidden="hidden">
+    <form asp-action="DodajGostaUSobu" asp-controller="Gosti" id="DodajGostaUSobu">
+
+        <input type="number" name="rezId" id="rezIdDodajGostaUSobu" value="@Model.rezervacija.RezervacijaId" readonly="readonly" />
+        <input type="number" name="SobaId" id="SobaIdDodajGostaUSobu" readonly="readonly" />
+        <input type="number" name="GostId" id="GostIdDodajGostaUSobu" readonly="readonly" />
+
+    </form>
+
+    <form asp-action="UkloniGosta" asp-controller="Gosti" id="UkloniGostaIzSobe">
+
+        <input type="number" name="rezId" id="rezIdUkloniGostaIzSobe" value="@Model.rezervacija.RezervacijaId" readonly="readonly" />
+        <input type="number" name="SobaId" id="SobaIdUkloniGostaIzSobe" readonly="readonly" />
+        <input type="number" name="GostId" id="GostIdUkloniGostaIzSobe" readonly="readonly" />
+
+    </form>
+    <form asp-action="ZamjeniGostovuSobu" asp-controller="Gosti" id="ZamjeniGostovuSobu">
+
+        <input type="number" name="rezId" id="rezIdZamjeniGostovuSobu" value="@Model.rezervacija.RezervacijaId" readonly="readonly" />
+
+        <input type="number" name="SobaZaUklonitId" id="SobaIdSobaZaUklonitId" readonly="readonly" />
+
+        <input type="number" name="SobaZaDodatId" id="SobaIdSobaZaDodatId" readonly="readonly" />
+
+        <input type="number" name="GostId" id="GostIdZamjeniGostovuSobu" readonly="readonly" />
+
+    </form>
+</div>
+
+<div class="container-fluid">
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <br />
+            <br />
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h1 class="panel-title" style="font-size:x-large">Gosti</h1>
+                </div>
+                <div class="panel-body box-container">
+                    <br />
+                    <label>Pronađi postojećeg gosta:</label>
+
+                    <form id="GostiPretraga" asp-action="_GostiTabela" ajax-poziv="da" ajax-rezultat="_GostiTabelaPartial">
+                        <div class="input-group">
+                            <input type="text" name="ImePrezime" placeholder="Unesi Ime Prezime Gosta" class="form-control input-group-lg" />
+                            <br />
+                            <input type="number"name="RezId" value="@Model.rezervacija.RezervacijaId" hidden="hidden"  />
+                            <div class="input-group-btn">
+                                <button class="btn btn-primary" type="submit">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <h4 style="text-align:center">ili</h4>
+                <button type="button" class="btn btn-primary center-block" data-toggle="ajax-modal" data-target="#add-contact" data-url="@Url.Action("_NoviGost","Gosti")">
+                    Dodaj Novog Gosta
+                </button>
+
+                <div id="modal-placeholder"></div>
+
+                <br />
+                <br />
+                <div id="_GostiTabelaPartial">
+                    <partial name="_GostiTabela" model="null" />
+                </div>
+
+
+            </div>
+        </div>
+        <div class="col-md-6">
+            <br />
+            <h3>Rezervisane Sobe</h3>
+            <br />
+            <div id="_SobePaneliDiv">
+                <partial name="_SobePaneli" model="Model">
+            </div>
+        </div>
+
+
+    </div>
+    <div class="row">
+
+        <div class="pull-right">
+            <a class="btn btn-success" asp-action="DodajGlavnogGosta" asp-controller="Gosti" asp-route-rezID="@Model.rezervacija.RezervacijaId">Završi sa dodavanjem</a>
+        </div>
+        <div class="pull-left">
+            <a class="btn btn-default" asp-action="DodajSobe" asp-controller="Rezervacije" asp-route-id="@Model.rezervacija.RezervacijaId">Nazad</a>
+        </div>
+    </div>
+
+    
+
+
+</div>
+
+@section Scripts{
+
+    <script>
+
+        
+
+
+
+        $(document).ready(function () {
+
+            console.log("update ready");
+
+            $(".connectedSortable").sortable({
+                update: function (event, ui) { }
+            });
+
+        });
+
+        $(window).on("load", function () {
+
+
+
+            console.log("submit called");
+            var formaAction = $("#GostiPretraga").attr("action");
+            var forma = $(this);
+
+
+            $.ajax({
+                type: "GET",
+                url: formaAction,
+                data: forma.serialize(),
+                success: function (data) {
+                    $("#_GostiTabelaPartial").empty();
+                    $("#_GostiTabelaPartial").html(data);
+                },
+                error: function (data) {
+                    console.log("greska");
+                    console.log(data);
+                }
+            });
+
+
+
+
+            $.get({
+                url: '@Url.Action("UpdatejtPanel", "Gosti", new { rezID=Model.rezervacija.RezervacijaId})',
+                async: "false",
+                success: function (data) {
+                    console.log(data);
+                    $("#_SobePaneliDiv").empty();
+                    $("#_SobePaneliDiv").html(data);
+
+                    console.log("loa dget update");
+
+
+                }
+
+            });
+
+
+
+        });
+
+
+        $(document).ajaxComplete(function () {
+            DodajGosteAjax();
+
+            $(".connectedSortable").sortable("refresh");
+        });
+
+        $(function () {
+            var placeholderElement = $('#modal-placeholder');
+
+            $('button[data-toggle="ajax-modal"]').click(function (event) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+
+                console.log("pritisnut");
+                var url = $(this).data('url');
+                $.get(url).done(function (data) {
+                    placeholderElement.html(data);
+                    placeholderElement.find('.modal').modal('show');
+                });
+              
+            });
+
+            placeholderElement.on('click', '[data-save="modal"]', function (event) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                var form = $(this).parents('.modal').find('form');
+                var actionUrl = form.attr('action');
+                var dataToSend = form.serialize();
+
+                $.post(actionUrl, dataToSend).done(function (data) {
+                    var newBody = $('.modal-body', data);
+                    placeholderElement.find('.modal-body').replaceWith(newBody);
+
+                    var isValid = newBody.find('[name="IsValid"]').val() === 'True';
+                    if (isValid) {
+                        placeholderElement.find('.modal').modal('hide');
+                        $.notify({
+                            icon: 'glyphicon glyphicon-star',
+                            message: "Gost uspješno dodan"
+                        });
+                    }
+                });
+            });
+        });
+
+
+
+
+
+
+
+
+        function DodajGosteAjax() {
+
+            $("#GostiPretraga").submit(function (event) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                console.log("submit called");
+                var formaAction = $("#GostiPretraga").attr("action");
+                var forma = $(this);
+
+
+                $.ajax({
+                    type: "GET",
+                    url: formaAction,
+                    data: forma.serialize(),
+                    success: function (data) {
+                        $("#_GostiTabelaPartial").empty();
+                        $("#_GostiTabelaPartial").html(data);
+
+                    },
+                    error: function (data) {
+                        console.log("greska");
+                        console.log(data);
+                    }
+                });
+
+            });
+
+            $("#TESTS").click(function () {
+                $("#TESTDIV").toggle("slow");
+            }); 
+            
+            $(function () {
+                   $("#DrzavaSelect").on("change",function (evt) {
+
+                        console.log("change postignut");
+                        if ($("#DrzavaSelect").val() !== "-1") {
+
+                                $.ajax({
+                                    url:  '@Url.Action("GetGradoveDrzave", "Gosti")',
+                                    type: 'GET',
+                                    data: { DrzavaID: $("#DrzavaSelect").val() },
+                                    success: function (Gradovi) {
+                                        //alert("Data retrieval successful");
+                                        console.log(Gradovi);
+
+                                        if (!$("#Gradovi").is(":empty")) {
+                                            console.log("select je vec pun");
+
+                                            $('#Gradovi')
+                                                .find('option')
+                                                .remove();
+                                        }
+
+                                        var $select = $('#Gradovi');
+                                        $.each(Gradovi, function (i, grad) {
+                                            $("#Gradovi").append("<option value='" + grad.id + "'>" + grad.naziv + "</option>");
+                                        });
+                                        console.log($select.html());
+
+                                        $("#ExtraInfo").show(2000);
+                                    }
+                           
+                                });
+                        }
+               
+                    });
+            });
+
+
+
+
+            $("tbody.connectedSortable")
+                .sortable({
+                    connectWith: ".connectedSortable",
+                    items: ">tr:not(:first)",
+                    appendTo: "parent",
+                    helper: "clone",
+                    cursor: "move",
+                    zIndex: 999990,
+                    start: function (event, ui) {
+                        console.log("start");
+
+                        $(this).toggleClass("animated pulse");
+
+                        $('.connectedSortable').toggleClass("animated pulse");
+
+
+                    },
+                    receive: function (event, ui) {
+
+                        var KapacitetOk = true;
+
+                        var OrginalnaTabela = ui.sender;
+                        var PoslaniRed = ui.item;
+                        var TabelaKojaPrima = $(this).parent("table");
+
+                        console.log(OrginalnaTabela.html());
+                        console.log(PoslaniRed.html());
+                        console.log(TabelaKojaPrima.html());
+
+
+                        console.log(ui.sender.parent("table").attr("id"));
+
+
+                        //Provjera Kapaciteta
+                        var TrenutniKapacitet = parseInt($(this).parent("table").attr("Trenutni-Kapacitet"));
+                        var MaxKapacitet = parseInt($(this).parent("table").attr("Max-Kapacitet"));
+
+                        console.log("trenutni kapacitet");
+                        console.log(TrenutniKapacitet);
+
+                        console.log("Max kapacity");
+                        console.log(MaxKapacitet);
+
+                        if (TrenutniKapacitet >= MaxKapacitet) {
+                            $.notify({
+                                title: "Greška!",
+                                icon: "glyphicon glyphicon-ok-sign",
+                                message: "Maximalni broj gostiju u sobi Dostignut"
+                            },
+                                {
+                                    element: "body",
+                                    type: "danger",
+                                    placement: {
+                                        from: "bottom",
+                                        align: "center"
+                                    }
+                                }
+                            );
+
+
+                            $(ui.sender).sortable("cancel");
+                            $(this).sortable("cancel");
+
+                            KapacitetOk = false;
+                        }
+
+
+
+
+
+
+
+
+
+                        if (ui.sender.parent("table").attr("id") === "SviGostiPretraga" && KapacitetOk===true) {
+
+
+                            //Gost se samo dodaje u novu sobu
+                            var SobaId = $(this).parent("table").attr("Soba-Id");
+                            $("#SobaIdDodajGostaUSobu").val(parseInt(SobaId));
+
+                            var GostId = ui.item.attr("Gost-Id");
+                            console.log(ui.item.attr("Gost-Id"));
+                            $("#GostIdDodajGostaUSobu").val(parseInt(GostId));
+
+                            var Forma = $("#DodajGostaUSobu");
+                            var Akcija = $("#DodajGostaUSobu").attr("action");
+
+                            console.log(Forma);
+                            console.log(Akcija);
+
+
+
+                            //async false kako nebi korisnik prebrzo prebacivao i cinio probleme
+                            $.post({
+                                url: Akcija,
+                                async:"false",
+                                data: Forma.serialize(),
+                                success: function (data) {
+                                    console.log(data);
+
+
+
+                                    $.get({
+                                    url: '@Url.Action("UpdatejtPanel", "Gosti", new { rezID=Model.rezervacija.RezervacijaId})',
+                                    async: "false",
+                                    success: function (data) {
+                                        console.log(data);
+                                        $("#_SobePaneliDiv").empty();
+                                        $("#_SobePaneliDiv").html(data);
+                                            $.notify({
+                                                title: "Uspjeh!",
+                                                icon:"glyphicon glyphicon-ok-sign",
+                                            message: " Gost uspješno dodan u sobu"
+                                            },
+                                            {
+                                                element: "body",
+                                                type: "success",
+                                                placement: {
+                                                    from: "bottom",
+                                                    align: "center"
+                                                }
+                                             }
+
+                                        );
+
+
+                                    }
+
+                                     });
+
+                                }
+
+
+
+                            });
+
+
+                        }
+
+
+
+                        if (ui.sender.parent("table").attr("id") === "PanelSobe" && $(this).parent("table").attr("id") === "SviGostiPretraga" && KapacitetOk === true) {
+                            //ako gosta iz sobe saljemo nazad u tabelu za pretragu smatra se uklanjanjem
+
+                            //IdSobeIzKojeUklanjanmo
+                            var SobaiD = ui.sender.parent("table").attr("Soba-Id");
+                            $("#SobaIdUkloniGostaIzSobe").val(parseInt(SobaiD));
+
+                            //Gost kojeg uklanjanmo
+                            var GostZaUklonit = ui.item.attr("Gost-Id");
+                            $("#GostIdUkloniGostaIzSobe").val(parseInt(GostZaUklonit));
+
+
+
+
+                            var Forma2 = $("#UkloniGostaIzSobe");
+                            var Akcija2 = $("#UkloniGostaIzSobe").attr("action");
+
+
+
+                             //async false kako nebi korisnik prebrzo prebacivao i cinio probleme
+                            $.post({
+                                url: Akcija2,
+                                async:"false",
+                                data: Forma2.serialize(),
+                                success: function (data) {
+                                    console.log(data);
+
+
+
+                                $.get({
+                                url: '@Url.Action("UpdatejtPanel", "Gosti", new { rezID=Model.rezervacija.RezervacijaId})',
+                                async: "false",
+                                success: function (data) {
+                                    console.log(data);
+                                    $("#_SobePaneliDiv").empty();
+                                    $("#_SobePaneliDiv").html(data);
+                                        $.notify({
+                                            title: "Uspjeh!",
+                                            icon:"glyphicon glyphicon-ok-sign",
+                                        message: " Gost uspješno uklonjen iz sobe"
+                                        },
+                                        {
+                                            element: "body",
+                                            type: "success",
+                                            placement: {
+                                                from: "bottom",
+                                                align: "center"
+                                            }
+                                         }
+
+                                        );
+                                }
+                                 });
+
+
+                                }
+
+                            });
+
+                        }
+
+
+
+
+                        if (ui.sender.parent("table").attr("id") === "PanelSobe" && $(this).parent("table").attr("id") === "PanelSobe" && KapacitetOk === true) {
+                            //mjenjanej sobe
+
+                            //IdSobeIzKojeUklanjanmo
+                            var Soba_ID_uklonit = ui.sender.parent("table").attr("Soba-Id");
+                            $("#SobaIdSobaZaUklonitId").val(parseInt(Soba_ID_uklonit));
+
+
+                            //Soba kojoj dodajemo
+                            var Soba_ID_dodat = $(this).parent("table").attr("Soba-Id");
+                            $("#SobaIdSobaZaDodatId").val(parseInt(Soba_ID_dodat));
+
+                            //Gost kojeg uklanjanmo
+                            var Gost_ZaUklonit = ui.item.attr("Gost-Id");
+                            $("#GostIdZamjeniGostovuSobu").val(parseInt(Gost_ZaUklonit));
+
+
+
+
+                            var Forma3 = $("#ZamjeniGostovuSobu");
+                            var Akcija3 = $("#ZamjeniGostovuSobu").attr("action");
+
+
+
+                             //async false kako nebi korisnik prebrzo prebacivao i cinio probleme
+                            $.post({
+                                url: Akcija3,
+                                async:"false",
+                                data: Forma3.serialize(),
+                                success: function (data) {
+                                    console.log(data);
+
+
+
+                                $.get({
+                                url: '@Url.Action("UpdatejtPanel", "Gosti", new { rezID=Model.rezervacija.RezervacijaId})',
+                                async: "false",
+                                success: function (data) {
+                                    console.log(data);
+                                    $("#_SobePaneliDiv").empty();
+                                    $("#_SobePaneliDiv").html(data);
+                                        $.notify({
+                                            title: "Uspjeh!",
+                                            icon:"glyphicon glyphicon-ok-sign",
+                                        message: " Gost uspješno uklonjen iz sobe i dodan u novu"
+                                        },
+                                        {
+                                            element: "body",
+                                            type: "success",
+                                            placement: {
+                                                from: "bottom",
+                                                align: "center"
+                                            }
+                                         }
+
+                                    );
+
+
+
+                                }
+                                 });
+
+                                }
+
+                            });
+
+                        }
+
+
+
+
+                    }
+                });
+
+
+            function updateSortable() {
+                //$(".connectedSortable").sortable({
+                //    update: function (event, ui) { }
+                //});
+
+                $(".connectedSortable").sortable();
+            }
+
+
+
+        }
+
+
+    </script>
+
+
+
+    @*<script type="text/javascript">
+            $(document).ready(function () {
+
+                DodajGosteAjax();
+
+                $("button").click(function () {
+                    //$("#SamoUkloni").val("true");
+                    //$("#SamoUkloni").prop("checked", true);
+
+                    $("#SamoUkloni").attr("value", "true");
+                });
+
+            });
+
+            $(document).ajaxComplete(function () {
+                // izvršava nakon bilo kojeg ajax poziva
+                DodajGosteAjax();
+            });
+
+            function DodajGosteAjax() {
+                $("tbody.connectedSortable")
+                    .sortable({
+                        connectWith: ".connectedSortable",
+                        items: "> tr:not(:first)",
+                        appendTo: "parent",
+                        helper: "clone",
+                        cursor: "move",
+                        zIndex: 999990,
+                        receive: function (event, ui) {
+                            alert("The ajax should be called");
+                            console.log(this);
+
+                            console.log("parent table je:");
+                            var tabela = $(this).parent("table").attr("id");
+                            console.log(tabela);
+
+                            // td: first - child
+
+                            console.log("red id je:");
+                            var redId = ui.item.children("td:first").attr("id");
+                            console.log(redId);
+
+                            console.log(ui.item.html());
+
+                            //UpdateFormu(redId, tabela);
+                            alert("The ajax should be called");
+                        }
+                    });
+
+
+                $("#GostiPretraga").submit(function () {
+                    console.log("submit called");
+                    var formaAction = $("#GostiPretraga").attr("action");
+                    var forma = $(this);
+
+
+                    $.ajax({
+                        type: "GET",
+                        url: formaAction,
+                        data: forma.serialize(),
+                        success: function (data) {
+                            console.log("data: iz Forme Akcije" + formaAction + data);
+                            $("#_GostiTabelaPartial").empty();
+                            $("#_GostiTabelaPartial").html(data);
+                            $(".connectedSortable").sortable({
+                                update: function (event, ui) { }
+                            });
+                        },
+                        error: function (data) {
+                            console.log("greska");
+                            console.log(data);
+                        }
+                    });
+
+                });
+
+
+                function UpdateFormu(GostId, ZaduzensaSobaId) {
+
+
+                    if (ZaduzensaSobaId === "SviGostiPretraga") {
+                        $("#SamoUkloni").attr("value", "true");
+                        $("#SamoUkloni").prop("checked", true);
+                        $("#ZaduzenaSobaId").val(parseInt(0));
+                    } else {
+                        $("#ZaduzenaSobaId").val(parseInt(ZaduzensaSobaId));
+                    }
+
+                    $("#GostID").val(parseInt(GostId));
+
+
+                    console.log("The ajax should be called");
+
+                    console.log($("#GostID").html());
+                    console.log($("#ZaduzenaSobaId").html());
+
+                    console.log("TEST");
+
+                    var formaAction = $("#Formaa").attr("action");
+                    var forma = $("#Formaa");
+
+                    console.log(formaAction);
+                    console.log(forma);
+
+                    alert("The ajax should be called");
+
+
+                    $("#Formaa")[0].submit(function () {
+                        console.log("submit called");
+                        var formaAction = $("#Formaa").attr("action");
+                        var forma = $(this);
+
+                        console.log(formaAction);
+                        console.log(forma);
+
+
+
+                        $.ajax({
+                            type: "GET",
+                            url: formaAction,
+                            data: forma.serialize(),
+                            success: function (data) {
+                                console.log("data: iz Forme Akcije" + formaAction + data);
+                                $("#_SobePaneliDiv").empty();
+                                $("#_SobePaneliDiv").html(data);
+
+                            }
+                        });
+
+
+                        $(".connectedSortable").sortable({
+                            update: function (event, ui) { }
+                        });
+
+
+
+                    });
+
+                }
+
+
+
+                $(function () {
+                    var placeholderElement = $('#modal-placeholder');
+
+                    $('button[data-toggle="ajax-modal"]').click(function (event) {
+                        event.preventDefault();
+                        event.stopImmediatePropagation();
+
+
+                        console.log("pritisnut");
+                        var url = $(this).data('url');
+                        $.get(url).done(function (data) {
+                            placeholderElement.html(data);
+                            placeholderElement.find('.modal').modal('show');
+                        });
+                    });
+
+                    placeholderElement.on('click', '[data-save="modal"]', function (event) {
+                        event.preventDefault();
+                        event.stopImmediatePropagation();
+
+                        var form = $(this).parents('.modal').find('form');
+                        var actionUrl = form.attr('action');
+                        var dataToSend = form.serialize();
+
+                        $.post(actionUrl, dataToSend).done(function (data) {
+                            var newBody = $('.modal-body', data);
+                            placeholderElement.find('.modal-body').replaceWith(newBody);
+
+                            var isValid = newBody.find('[name="IsValid"]').val() === 'True';
+                            if (isValid) {
+                                placeholderElement.find('.modal').modal('hide');
+                                $.notify({
+                                    icon: 'glyphicon glyphicon-star',
+                                    message: "Gost uspješno dodan"
+                                });
+                            }
+                        });
+                    });
+                });
+
+
+            }
+
+
+        </script>*@
+
+}

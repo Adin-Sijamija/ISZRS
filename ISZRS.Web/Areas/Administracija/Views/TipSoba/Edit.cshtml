@@ -1,0 +1,42 @@
+﻿@model ISZR.Web.Models.TipSobe
+
+@{
+    ViewData["Title"] = "Uredi tip sobe";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Uredi tip sobe</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Naziv" class="control-label"></label>
+                <input asp-for="Naziv" class="form-control" />
+                <span asp-validation-for="Naziv" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Opis" class="control-label"></label>
+                <input asp-for="Opis" class="form-control" />
+                <span asp-validation-for="Opis" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Snimi" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-1">
+    </div>
+    <div class="col-md-4">
+        <a asp-action="Index" asp-controller="TipSobeNamjestaj" class="btn btn-block btn-default ">Uredi količinu namještaja</a>
+        <a asp-action="Index" asp-controller="TipSobeNamjestaj" class="btn btn-block btn-default ">Uredi Momući namještaj</a>
+    </div>
+</div>
+
+    <div>
+        <a asp-action="Index" class="btn btn-default">Nazad</a>
+    </div>
+

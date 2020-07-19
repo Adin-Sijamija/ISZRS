@@ -1,0 +1,119 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.NarudzbeSobeVM
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Sobne narudžbe</h2>
+<h4>Za sobu:@Model.ZaduzeneSoba.Sobe.BrojSobe</h4>
+<hr />
+
+@{
+    var trenutno = Model.Narudzbe.Where(x => x.JeDostavljenja == false).Count();
+}
+
+<a asp-action="NovaNaurzba" asp-route-SobaZaduzenjeId="@Model.ZaduzeneSoba.Id" class="btn btn-success">Nova Narudžba</a>
+
+
+@if (trenutno > 0)
+{
+    <h4>Trenutne narudžbe</h4>
+    <table class="table table-responsive table-hover">
+        <thead>
+            <tr>
+                <th>Narućeno</th>
+                <th>Bit će dostavljeno</th>
+                <th>Cijena</th>
+                <th>Čekanje</th>
+            </tr>
+        </thead>
+        @if (Model.Narudzbe.Count > 0)
+        {
+            @foreach (var item in Model.Narudzbe.Where(x => x.JeDostavljenja == false))
+            {
+                <tbody>
+                    <tr class="clickable success" data-toggle="collapse" data-target="#Narudzba@(item.Narudzba.Id)" aria-expanded="false" aria-controls="Narudzba@(item.Narudzba.Id)">
+                        <td>
+                            @item.Narudzba.DatumNarudzbe.ToString()
+                        </td>
+                        <td>
+                            @item.Narudzba.DatumDostave.ToString()
+                        </td>
+                        <td>
+                            @item.ukupnaCijenaNarduzbe KM
+                        </td>
+                        @if ((item.Narudzba.DatumDostave.Date == DateTime.Now.Date))
+                        {
+                            <td>Dostavljeno za @((item.Narudzba.DatumDostave - DateTime.Now).Hours) sati </td>
+
+                        }
+                        else
+                        {
+                            <td>Dostavljeno za @((item.Narudzba.DatumDostave - DateTime.Now).Days) dana </td>
+                        }
+                    </tr>
+                </tbody>
+                <tbody id="Narudzba@(item.Narudzba.Id)" class="collapse">
+                    @foreach (var artikal in item.NarucenaHrana)
+                    {
+                        <tr class="active">
+                            <td>@artikal.Hrana.Naziv</td>
+                            <td>Komada:@artikal.Kolicina</td>
+                            <td>Cijena:@(artikal.Hrana.Cijena * artikal.Kolicina)</td>
+                        </tr>
+                    }
+                </tbody>
+
+            }
+        }
+    </table>
+}
+
+
+<h4>Prijašnje narudžbe</h4>
+<table class="table table-responsive table-hover">
+    <thead>
+        <tr>
+            <th>Naručeno</th>
+            <th>Dostavljeno</th>
+            <th>Cijena</th>
+        </tr>
+    </thead>
+    @if (Model.Narudzbe.Count > 0)
+    {
+        @foreach (var item in Model.Narudzbe.Where(x => x.JeDostavljenja))
+        {
+            <tbody>
+                <tr class="clickable warning" data-toggle="collapse" data-target="#Narudzba@(item.Narudzba.Id)" aria-expanded="false" aria-controls="Narudzba@(item.Narudzba.Id)">
+                    <td>
+                        @item.Narudzba.DatumNarudzbe.ToString()
+                    </td>
+                    <td>
+                        @item.Narudzba.DatumDostave.ToString()
+                    </td>
+                    <td>
+                        @item.ukupnaCijenaNarduzbe KM
+                    </td>
+                    
+                </tr>
+            </tbody>
+            <tbody id="Narudzba@(item.Narudzba.Id)" class="collapse">
+                @foreach (var artikal in item.NarucenaHrana)
+                {
+                    <tr class="active">
+                        <td>@artikal.Hrana.Naziv</td>
+                        <td>Komada:@artikal.Kolicina</td>
+                        <td>Cijena:@(artikal.Hrana.Cijena*artikal.Kolicina)</td>
+                    </tr>
+                }
+            </tbody>
+
+        }
+    }
+</table>
+
+
+<h3 class="pull-right">Ukupna cijena svih narudžbi: <span style="color:green">@Model.UkupnaCijena</span> KM</h3>
+<br />
+<a asp-action="Index" asp-controller="Pocetna" class="btn btn-default">Nazad</a>

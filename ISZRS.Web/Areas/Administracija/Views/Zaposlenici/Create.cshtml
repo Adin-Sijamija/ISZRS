@@ -1,0 +1,95 @@
+﻿@model ISZRS.Web.Areas.Identity.Pages.Account.RegisterModel.InputModel
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Novi korisnik</h2>
+
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="@Model.Ime" class="control-label"></label>
+        <input asp-for="@Model.Ime" class="form-control" />
+        <span asp-validation-for="@Model.Ime" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.Prezime" class="control-label"></label>
+        <input asp-for="@Model.Prezime" class="form-control" />
+        <span asp-validation-for="@Model.Prezime" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.KorisnickoIme" class="control-label"></label>
+        <input asp-for="@Model.KorisnickoIme" class="form-control" />
+        <span asp-validation-for="@Model.KorisnickoIme" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.Password" class="control-label"></label>
+        <input asp-for="@Model.Password" class="form-control" />
+        <span asp-validation-for="@Model.Password" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.ConfirmPassword" class="control-label"></label>
+        <input asp-for="@Model.ConfirmPassword" class="form-control" />
+        <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.DatumRođenja" class="control-label"></label>
+        <input asp-for="@Model.DatumRođenja" class="form-control" />
+        <span asp-validation-for="@Model.DatumRođenja" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="@Model.JMBG" class="control-label"></label>
+        <input asp-for="@Model.JMBG" class="form-control" />
+        <span asp-validation-for="@Model.JMBG" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Odaberi ulogu:</label>
+        <select name="Uloga">
+            <option value="1">Recepcionar</option>
+            <option value="2">Logisticar</option>
+        </select>
+    </div>
+
+
+
+    <div class="form-group">
+        <label>Slika</label>
+        <input type="file" value="Dodaj Sliku" name="Slika" onchange="readURL(this);" />
+        <img id="SlikaPrikaz" src="#" alt="Odaberi sliku" />
+
+    </div>
+    <br />
+    <div class="form-group">
+        <input type="submit" value="Snimi" class="btn btn-success" />
+
+    </div>
+
+
+</form>
+
+<div>
+    <a asp-action="Index" class="btn btn-default">Nazad</a>
+</div>
+
+
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#SlikaPrikaz')
+                    .attr('src', e.target.result)
+                    .width(200)
+                    .height(200);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

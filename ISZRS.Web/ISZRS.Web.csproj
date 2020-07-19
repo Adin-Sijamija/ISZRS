@@ -1,0 +1,190 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
+    <UserSecretsId>d66e2579-3c8f-46dc-b1f4-ab17992300f4</UserSecretsId>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  
+  <ItemGroup>
+    <Compile Remove="Areas\Identity\**" />
+    <Compile Remove="Areas\Recepcija\**" />
+    <Content Remove="Areas\Identity\**" />
+    <Content Remove="Areas\Recepcija\**" />
+    <EmbeddedResource Remove="Areas\Identity\**" />
+    <EmbeddedResource Remove="Areas\Recepcija\**" />
+    <None Remove="Areas\Identity\**" />
+    <None Remove="Areas\Recepcija\**" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Content Remove="wwwroot\images\ugovor.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Areas\Identity\Data\ISZRSWebContext.cs" />
+    <Compile Include="Areas\Identity\Data\ZaposlenikISZRSWebUser.cs" />
+    <Compile Include="Areas\Identity\IdentityHostingStartup.cs" />
+    <Compile Include="Areas\Identity\Pages\Account\Login.cshtml.cs" />
+    <Compile Include="Areas\Identity\Pages\Account\Logout.cshtml.cs" />
+    <Compile Include="Areas\Identity\Pages\Account\Manage\Index.cshtml.cs" />
+    <Compile Include="Areas\Identity\Pages\Account\Register.cshtml.cs" />
+    <Compile Include="Areas\Recepcija\Controllers\GostiController.cs" />
+    <Compile Include="Areas\Recepcija\Controllers\KorisnikViewComponent.cs" />
+    <Compile Include="Areas\Recepcija\Controllers\NarudjbaController.cs" />
+    <Compile Include="Areas\Recepcija\Controllers\PocetnaController.cs" />
+    <Compile Include="Areas\Recepcija\Controllers\RacunController.cs" />
+    <Compile Include="Areas\Recepcija\Controllers\RezervacijeController.cs" />
+    <Compile Include="Areas\Recepcija\Controllers\SobaNamjestajViewComponent.cs" />
+    <Compile Include="Areas\Recepcija\Controllers\SobeController.cs" />
+    <Compile Include="Areas\Recepcija\Controllers\UslugeController.cs" />
+    <Compile Include="Areas\Recepcija\Controllers\VremenskaPrognozaController.cs" />
+    <Compile Include="Areas\Recepcija\Controllers\ZaduzivanjeUslugaController.cs" />
+    <Compile Include="Areas\Recepcija\Data\Pagination.cs" />
+    <Compile Include="Areas\Recepcija\Data\ViewRenderService.cs" />
+    <Compile Include="Areas\Recepcija\Models\AktivirajRezervacijuVM.cs" />
+    <Compile Include="Areas\Recepcija\Models\DodajGosteVM.cs" />
+    <Compile Include="Areas\Recepcija\Models\GostInfoVM.cs" />
+    <Compile Include="Areas\Recepcija\Models\JelaVM.cs" />
+    <Compile Include="Areas\Recepcija\Models\NajmjestajDodavanjeVM.cs" />
+    <Compile Include="Areas\Recepcija\Models\NarudzbaViewModel.cs" />
+    <Compile Include="Areas\Recepcija\Models\NarudzbeSobeVM.cs" />
+    <Compile Include="Areas\Recepcija\Models\NovaRezervacijaVM.cs" />
+    <Compile Include="Areas\Recepcija\Models\RacunNeGrupisanVM.cs" />
+    <Compile Include="Areas\Recepcija\Models\RezervacijaInfoVM.cs" />
+    <Compile Include="Areas\Recepcija\Models\RezervacijaRacunModal.cs" />
+    <Compile Include="Areas\Recepcija\Models\RezervacijaVM.cs" />
+    <Compile Include="Areas\Recepcija\Models\RezervacijeIndexModal.cs" />
+    <Compile Include="Areas\Recepcija\Models\SobaNamjestajVM.cs" />
+    <Compile Include="Areas\Recepcija\Models\SobeIndexVM.cs" />
+    <Compile Include="Areas\Recepcija\Models\SobeURezervacijList.cs" />
+    <Compile Include="Areas\Recepcija\Models\UslugaInfoVm.cs" />
+    <Compile Include="Areas\Recepcija\Models\UslugaRezervacijaDodavanjeVM.cs" />
+    <Compile Include="Areas\Recepcija\Models\UslugeVM.cs" />
+    <Compile Include="Areas\Recepcija\Models\ZaduzenejInfoVM.cs" />
+    <Compile Include="Areas\Recepcija\Models\ZavrsiNarudzbuModel.cs" />
+    <Compile Include="Areas\Recepcija\Models\_TrenutnoDostupneSobeVM.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Areas\Recepcija\Views\Shared\Components\TrenutniKorisnikRecepcija\KorisnikVC.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Shared\Error.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="Areas\Recepcija\Views\Shared\Index.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Shared\_LayoutRacun.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="Areas\Recepcija\Views\Shared\_Layout.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="Areas\Recepcija\Views\Shared\_ValidationScriptsPartial.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Include="Areas\Recepcija\Views\_ViewImports.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="jQuery.UI.Combined" Version="1.12.1" />
+    <PackageReference Include="jQuery.Validation" Version="1.17.0" />
+    <PackageReference Include="jsreport.AspNetCore" Version="2.0.1" />
+    <PackageReference Include="jsreport.Binary" Version="2.4.0" />
+    <PackageReference Include="jsreport.Local" Version="2.0.1" />
+    <PackageReference Include="MessagePack" Version="1.7.3.4" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ISZRS.Data\ISZRS.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Administracija\Data\" />
+    <Folder Include="Areas\Identity\Services\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="Views\Resources\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Areas\Identity\Pages\_Layout.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Rezervacije\IndexPrijasnje.cshtml" />
+    <None Include="Areas\Recepcija\Views\Pocetna\Index.cshtml" />
+    <None Include="Areas\Recepcija\Views\Shared\Components\TrenutniKorisnikRecepcija\KorisnikVC.cshtml" />
+    <None Include="Areas\Identity\Pages\Account\Login.cshtml" />
+    <None Include="Areas\Identity\Pages\Account\Logout.cshtml" />
+    <None Include="Areas\Identity\Pages\Account\Manage\Index.cshtml" />
+    <None Include="Areas\Identity\Pages\Account\Manage\_ViewImports.cshtml" />
+    <None Include="Areas\Identity\Pages\Account\Register.cshtml" />
+    <None Include="Areas\Identity\Pages\Account\_ViewImports.cshtml" />
+    <None Include="Areas\Identity\Pages\_ValidationScriptsPartial.cshtml" />
+    <None Include="Areas\Identity\Pages\_ViewImports.cshtml" />
+    <None Include="Areas\Identity\Pages\_ViewStart.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Gosti\DodajGlavnogGosta.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Gosti\Info.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Gosti\KreditnaKartica.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Gosti\_GostiTabela.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Gosti\_NoviGost.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Gosti\_SobeGosti.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Gosti\_SobePaneli.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Narudjba\Index.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Narudjba\NovaNaurzba.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Narudjba\ZavrsiNarudzbu.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Narudjba\_Jela.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Narudjba\_NarudzbaKorpa.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Racun\GetRacun.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Racun\Index.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Rezervacije\AktivirajRezervaciju.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Rezervacije\Create.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Gosti\DodajGoste.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Rezervacije\DodajGlavnogGosta.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Rezervacije\DodajSobe.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Rezervacije\Index.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Rezervacije\Info.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Rezervacije\NovaRezervacija.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Rezervacije\_TrenutnoDostupneSobe.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Shared\Components\SobaNamjestaj\SobaNamjestaj.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Sobe\DodajNamjestaj.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Sobe\Index.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Rezervacije\_RezSobe.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Rezervacije\_Sobe.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Usluge\DodajUsluguRezervacij.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Usluge\Index.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Usluge\Info.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Usluge\RezervacijaZaduzenja.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Usluge\VasaUslugaInfo.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Usluge\ZaduzenjeDodaci.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Usluge\_DodajUsluguDefault.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Usluge\_DodajUsluguDnevno.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Usluge\_DodajUsluguPoSatu.cshtml" />
+    <Content Include="Areas\Recepcija\Views\Usluge\_DodajUsluguSedmicno.cshtml" />
+    <Content Include="Areas\Recepcija\Views\ZaduzivanjeUsluga\Index.cshtml" />
+    <None Include="wwwroot\images\ugovor.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\Administracija\Views\Shared\_Layout.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
+</Project>

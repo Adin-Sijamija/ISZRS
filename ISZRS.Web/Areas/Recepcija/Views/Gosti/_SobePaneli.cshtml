@@ -1,0 +1,17 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.DodajGosteVM
+
+
+
+
+@foreach (var item in Model.ZauzeteSobe)
+{
+    
+    <partial name="_SobeGosti" model="item" />
+
+}
+
+
+
+
+
+

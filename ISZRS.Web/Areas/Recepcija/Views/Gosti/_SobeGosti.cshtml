@@ -1,0 +1,53 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.DodajGosteVM.Row
+
+
+
+<div id="Panel @Model.ZaduzenaSoba.Id">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class="panel-title" style="font-size:x-large"> Soba broj : @Model.ZaduzenaSoba.Sobe.BrojSobe</h1>
+            <h4>Broj gostiju:@Model.TrenutniKapacitet/@Model.MaxKapacitet</h4>
+            <h4> </h4>
+
+
+        </div>
+        <div class="panel-body box-container">
+
+            <table class="table table-hover PanelTabela" id="PanelSobe" Trenutni-Kapacitet="@Model.TrenutniKapacitet" Max-Kapacitet="@Model.MaxKapacitet" Soba-Id="@Model.ZaduzenaSoba.Id">
+
+                <tbody class="connectedSortable">
+                    <tr>
+
+                        <th>
+                            Ime Prezime
+                        </th>
+                        <th>Drzava</th>
+
+                        <th>
+                            Adresa
+                        </th>
+                    </tr>
+                    @if (Model != null)
+                    {
+                        @foreach (var item in Model.Gosti)
+                        {
+                            <tr Gost-Id="@item.Id">
+                                <td>@item.PunoIme</td>
+                                <td>
+                                    @(item.Gradovi.Naziv + "," + item.Gradovi.Drzave.Naziv)
+                                </td>
+                                <td>@item.Adresa</td>
+                            </tr>
+                        }
+                    }
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+    </div>
+</div>

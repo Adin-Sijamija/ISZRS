@@ -1,0 +1,70 @@
+﻿@model ISZRS.Web.Areas.Administracija.Models.GodisnjiProfitVM
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+    var Godina = Context.Request.Query["godina"];
+
+
+
+    List<float> Profiti = new List<float>();
+    foreach (var item in Model.Mjeseci)
+    {
+        Profiti.Add(item.Racuni.Sum(x => x.Total));
+    }
+
+    var ProfitiArray = Newtonsoft.Json.JsonConvert.SerializeObject(Profiti);
+
+}
+
+<h2> Profit za @Godina godinu</h2>
+
+<canvas id="canvas" style="display: block; width: 729px; height: 364px;" width="729" height="364" class="chartjs-render-monitor"></canvas>
+<br />
+<div class="row">
+    <button class="btn btn-success">Novi Filter</button>
+    <button class="btn btn-warning">Print</button>
+    <button class="btn btn-default pull-right">Nazad</button>
+</div>
+
+
+@section Scripts{
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+    <script>
+
+        var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        var profiti = @ProfitiArray;
+        var ctx = $('#canvas');
+
+
+        var myLineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: MONTHS,
+                fill: true,
+                datasets: [{
+                    label: "Ukupni profit",
+                    data:profiti
+                }]
+            },
+           options: {
+                scaleShowValues: true,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            autoSkip: false
+                        }
+                    }]
+                }
+            }
+        
+        });
+
+    </script>
+}
+

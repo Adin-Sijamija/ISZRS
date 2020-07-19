@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewData["Title"] = "Administracija";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+}
+<br />
+<h2>Administracija</h2> 
+<hr />
+
+
+<div class=" row">
+
+    <div class="col-lg-4">
+        <div style="display:inline">
+            <a class="btn btn-default" asp-action="Index" asp-controller="Zaposlenici" asp-area="Administracija">
+                <div class="ImgTextDiv">
+                    <img src="~/images/korisnici.png" class="img-responsive" style="height:600px; width:400px; object-fit:fill" />
+                    <h1 class="ImgSpanBotLeft">Zaposlenici</h1>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+    <div class="col-lg-4">
+        <div style="display:inline">
+            <a class="btn btn-default" asp-action="Logistika">
+                <div class="ImgTextDiv">
+                    <img src="~/images/Logistika.jpg" class="img-responsive" style="height:600px; width:400px;" />
+                    <h1 class="ImgSpanBotLeft">Logistika</h1>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div style="display:inline">
+            <a class="btn btn-default" asp-action="Index" asp-controller="Profit">
+                <div class="ImgTextDiv">
+                    <img src="~/images/Racun.jpg" class="img-responsive" style="height:600px; width:400px;" />
+                    <h1 class="ImgSpanBotLeft">Profit </h1>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,47 @@
+﻿@model ISZR.Web.Models.Sobe
+
+@{
+    ViewData["Title"] = "Uredi Sobu";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Uredi sobu broj: @Model.BrojSobe</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="BrojSobe" class="control-label"></label>
+                <input asp-for="BrojSobe" class="form-control" />
+                <span asp-validation-for="BrojSobe" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BrojSprata" class="control-label"></label>
+                <input asp-for="BrojSprata" class="form-control" />
+                <span asp-validation-for="BrojSprata" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cijena" class="control-label"></label>
+                <input asp-for="Cijena" class="form-control" />
+                <span asp-validation-for="Cijena" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TipSobeID" class="control-label">Tip sobe</label>
+                <select asp-for="TipSobeID" class="form-control" asp-items="ViewBag.TipSobeID"></select>
+                <span asp-validation-for="TipSobeID" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group">
+                <input type="submit" value="Spasi" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-default" >Nazad</a>
+</div>
+

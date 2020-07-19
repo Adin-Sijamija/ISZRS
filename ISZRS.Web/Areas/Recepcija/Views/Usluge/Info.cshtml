@@ -1,0 +1,129 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.UslugaInfoVm
+
+@{
+    ViewData["Title"] = "Info";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+
+}
+
+
+
+<div class="row">
+    <div class="col-lg-5">
+        <h2>@Model.Usluga.Naziv Info</h2>
+        <hr />
+        <img class="zoom" src="data:image;base64,@System.Convert.ToBase64String(Model.Usluga.Slika)" width="400" height="400" />
+    </div>
+    <div class="col-lg-5">
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => Model.Usluga.Naziv)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => Model.Usluga.Naziv)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => Model.Usluga.Opis)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => Model.Usluga.Opis)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => Model.Usluga.Cijena)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => Model.Usluga.Cijena) KM
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => Model.Usluga.TipCijene)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => Model.Usluga.TipCijene)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => Model.Usluga.TipUsluge)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => Model.Usluga.TipUsluge)
+            </dd>
+
+        </dl>
+        <br />
+        <a class="btn btn-success" asp-action="DodajUsluguRezervacij" asp-controller="Usluge"
+           asp-route-rezId="@Model.Rezervacija.RezervacijaId" asp-route-uslugaId="@Model.Usluga.Id">Dodaj uslugu vašoj rezervacij</a>
+
+    </div>
+</div>
+<br />
+<div class="row">
+    @if (Model.Slodbodni.Count() > 0)
+    {
+
+
+        <h3>Ima Dodatke</h3>
+
+        <table class="table-condensed">
+            <thead>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Slodbodni)
+                {
+                    <tr style="display:inline">
+
+                        <td>
+                            @if (item.Slika != null)
+                            {
+                                <img src="data:image;base64,@System.Convert.ToBase64String(item.Slika)" width="240" height="240" />
+
+                            }
+                            else
+                            { <p>nema slike</p>}
+
+
+                        </td>
+                        <td>
+                            <table class="table">
+                                <tr>
+                                    <td>Naziv</td>
+                                    <td>@item.Ime</td>
+                                </tr>
+                                <tr>
+                                    <td>Info:</td>
+                                    <td>@item.Opis</td>
+                                </tr>
+                                <tr>
+                                    @if (item.JeUkljucen)
+                                    {
+                                        <td>Cijena:</td>
+                                        <td>Dodatak je uključen u paket</td>
+                                    }
+                                    else
+                                    {
+                                        <td>Cijena:</td>
+                                        <td>@item.Cijena KM</td>
+                                    }
+
+
+                                </tr>
+                            </table>
+                        </td>
+
+                    </tr>
+
+
+                }
+            </tbody>
+        </table>
+    }
+
+</div>
+<br />
+<div class="row">
+
+    <a asp-action="Index" class="btn btn-default" asp-route-rezId="@Model.Rezervacija.RezervacijaId">Nazad</a>
+</div>

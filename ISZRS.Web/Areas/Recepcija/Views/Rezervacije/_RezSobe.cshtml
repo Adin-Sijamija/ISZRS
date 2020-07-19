@@ -1,0 +1,80 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.RezervacijaVM
+
+
+
+@{ 
+    var BrojDana = (Model.rezervacija.DatumZavrsetkaRezerviranja - Model.rezervacija.DatumPocetkaRezerviranja).Days;
+}
+
+<h4>@Model.rezervacija.DatumPocetkaRezerviranja.ToShortDateString() --   @Model.rezervacija.DatumZavrsetkaRezerviranja.ToShortDateString()</h4>
+<h5>Trajanje rezervacije: @BrojDana dana</h5>
+
+<div id="_RezSobe" class="panel panel-default"  >
+
+    <table id="_RezSobeTable" class="table table-hover" >
+        <thead>
+            <tr>
+                
+                <th>
+                    Broj Sobe
+                </th>
+                <th>
+                    Broj Sprata
+                </th>
+                <th>Tip Sobe</th>
+                <th>
+                    Cijena
+                </th>
+
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+
+
+                @foreach (var item in Model.zaduzeneSobe)
+                {
+                    <tr>
+                     
+                        <td id="BrojSobe">
+                            @Html.DisplayFor(modelItem => item.BrojSobe)
+                        </td>
+                        <td id="BrojSprata">
+                            @Html.DisplayFor(modelItem => item.BrojSprata)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TipSobe.Naziv), kapacitet @item.TipSobe.Kapacitet osobe 
+
+                        </td>
+                        <td id="Cijena">
+                          Ukupna cijena sobe:  @(item.Cijena*BrojDana) KM
+
+
+
+                        </td>
+
+
+                        <td id="Link">
+                            <a class="RezSobe" asp-action="_UkloniSobu" asp-route-sobaID="@item.Id"
+                               asp-route-rezId="@Model.rezervacija.RezervacijaId" asp-controller="Rezervacije">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </a>
+
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <div>
+        
+        <h4 class="pull-right">Ukupna cijena  <span style="color:green">@(Model.UkupnaCijena)</span> KM </h4>
+    </div>
+
+</div>
+
+

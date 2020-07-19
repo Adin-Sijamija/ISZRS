@@ -1,0 +1,59 @@
+﻿@model IEnumerable<ISZRS.Data.Models.TipSobeNamjestaj>
+
+@{
+    ViewData["Title"] = "Tip namještaja";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+
+}
+<br />
+
+<h2>Tip namještaja po vrstama soba </h2>
+<hr />
+<p>
+    <a asp-action="Create" class="btn btn-default">Novi tip namještaja</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TipSobe)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TipNamjestaja)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Kolicina)
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TipSobe.Naziv)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TipNamjestaja)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Kolicina)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Uredi</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalji</a> 
+                </td>
+                <td>
+                    <a asp-action="Index" asp-controller="TipSobeMoguciNamjestaj" 
+class="btn btn-default"
+ asp-route-TipNamjestajaInt="@((int)item.TipNamjestaja)" 
+asp-route-tipSobeID="@item.TipSobeID">
+                        uredi mogući namještaj
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

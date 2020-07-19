@@ -1,0 +1,43 @@
+﻿@model ISZR.Web.Models.Sobe
+
+@{
+    ViewData["Title"] = "Detalji";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+}
+<br />
+<h2>Detalji sobe broj: @Model.BrojSobe</h2>
+<hr />
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.BrojSobe)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BrojSobe)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BrojSprata)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BrojSprata)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Cijena)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Cijena)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TipSobe)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TipSobe.Naziv)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-default">Uredi</a> |
+    <a asp-action="Index"class="btn btn-default">Nazad</a>
+</div>

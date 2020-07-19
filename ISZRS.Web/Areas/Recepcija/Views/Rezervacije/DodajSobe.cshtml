@@ -1,0 +1,413 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.RezervacijaVM
+
+@{
+    ViewData["Title"] = "Dodaj Sobe";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<h1>Korak II : Dodavanje soba </h1>
+<hr />
+
+
+<div class="container">
+    <div class="row">
+
+
+        <div class="col-sm-3 FormaDiv" >
+            <h4>Pronađi sobe</h4>
+
+            <form id="SobeForma" asp-action="_Sobe" asp-controller="Rezervacije" method="get" ajax-poziv="da" ajax-rezultat="SobePartialDiv">
+                <div class="form-group" hidden="hidden">
+                    <label>Id rezervacije</label>
+                    <input type="number" readonly="readonly" name="rezId" value="@Model.rezervacija.RezervacijaId" hidden="hidden"  />
+                </div>
+                <br />
+
+                <div class="form-group">
+                    <label>Cijena od </label>
+                    <input type="number" min="0" name="MinCijena" class="FilterInput"  />
+                </div>
+
+                <div class="form-group">
+                    <label >Do </label>
+                    <input type="number" min="0" name="MaxCijena" class="FilterInput" />
+                </div>
+
+                <div class="form-group">
+                    <lable>Vrsta soba </lable>
+                    <select name="TipSobe" asp-items="Model.TipoviSoba" class="FilterInput"></select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Pretraži" class="btn btn-default" />
+                </div>
+                <br />
+
+                <input hidden="hidden" id="TrenutnaStrana" name="TrenutnaStrana" type="number" />
+
+
+            </form>
+
+        </div>
+
+
+        <div class="col-sm-1">
+
+        </div>
+
+
+        <div class="col-sm-8">
+            <h4>Trenutno rezervisane sobe</h4>
+
+            <div id="_RezSobelDiv">
+                <partial id="_RezSobe" name="_RezSobe" model="Model" />
+            </div>
+            <hr />
+            <h4>Trenutno slobodne sobe</h4>
+
+            <div id="SobePartialDiv">
+                <partial name="_Sobe" id="_SobePartial" />
+
+            </div>
+
+            <a id="DodajGoste" class="btn btn-success pull-right" asp-action="DodajGoste" asp-controller="Gosti" asp-route-id="@Model.rezervacija.RezervacijaId">Dodaj Goste u Sobe</a>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts{
+
+    <script>
+
+        $(document).ready(function () {
+
+            $("#PrijasnjaStrana").val(0);
+            $("#TrenutnaStrana").val(1);
+            $("#IducaStrana").val(2);
+
+
+            setTimeout(function () {
+                $("#SobeForma").submit();
+               
+            
+
+            }, 1000);
+           
+
+            UpdateAjax();
+
+        });
+        $(document).ajaxComplete(function () {
+            // izvršava nakon bilo kojeg ajax poziva
+            UpdateAjax();
+
+          
+
+        });
+
+
+        $("#TEST").click(function () {
+
+            //$.notify("Hello World");
+        });
+
+        $("input.FilterInput").change(function () {
+            console.log("Doslo je do promjene");
+            $("#TrenutnaStrana").val(1);
+
+        });
+        $("select.FilterInput").change(function () {
+            console.log("Doslo je do promjene");
+            $("#TrenutnaStrana").val(1);
+
+        });
+
+        function UpdateAjax() {
+
+            if ($("#_SobeDivTBody").is(":empty")) {
+                $("#DodajGoste").addClass('disabled');
+                $.notify("IS POZVAN");
+
+            }
+
+
+
+
+            $("#SobeForma").submit(function (event) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                console.log("Prevebnt Test");
+
+                var ele = $(this);
+                $("#PrijasnjaStrana").val(0);
+
+
+                var akcija = ele.attr("action");
+
+                
+                console.log("submit pozvan");
+                console.log(akcija);
+                console.log(ele);
+
+
+      
+                $.ajax({
+                    type: "GET",
+                    url: akcija,
+                    data: ele.serialize(),
+                    success: function (data) {
+                        console.log("sucess pozvan");
+                        console.log(data);
+
+                        $("#SobePartialDiv").empty();
+                        $("#SobePartialDiv").html(data);
+
+                    }
+
+
+                });
+
+
+            });
+
+
+
+            $("a.StrelicaNazad").click(function (event) {
+
+                console.log("TEST StrelicaNazad");
+                var trenutnaStrana = $("#TrenutnaStrana");
+
+
+                var trenutnaStranaVrj = trenutnaStrana.val();
+                console.log("trenutna stranica--_" + trenutnaStranaVrj);
+
+                if (parseInt(trenutnaStranaVrj) > 1) {
+                    $("#TrenutnaStrana").val(parseInt(trenutnaStranaVrj) - 1);
+                }
+
+                UpdateSlobodneSobe();
+
+
+            });
+
+
+
+            $("a.StreliceNaprijed").click(function (event) {
+
+                  
+
+                var JeZadnajStranica = $("#ZadnjaStranica").is(":empty");
+                console.log(JeZadnajStranica);
+
+                if ($("#ZadnjaStranica").is(":empty")) {
+                    
+
+                    console.log("TEST StreliceNaprijed");
+                    var trenutnaStrana = $("#TrenutnaStrana");
+
+                    var trenutnaStranaVrj = trenutnaStrana.val();
+                    console.log("trenutna stranica--_" + trenutnaStranaVrj);
+
+
+
+                    $("#TrenutnaStrana").val(parseInt(trenutnaStranaVrj) + 1);
+                    console.log("trenutna stranica---UPDATE---" + $("#TrenutnaStrana").val());
+
+                    UpdateSlobodneSobe();
+
+
+                } else {
+                    console.log("Zadnja stranica dostignuta");
+
+                }
+
+        
+
+            });
+
+
+
+
+            $("a.Sobe").click(function (event) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                console.log("Prevebnt Test");
+
+                var ele = $(this);
+                console.log("elelment html---" + ele.html());
+
+                var akcija = ele.attr("href");
+                console.log("AKcija---" + akcija);
+
+           
+                //--OK--
+                //salji red kontroleru
+                $.ajax({
+                    type: "POST",
+                    url: akcija,
+                    success: function (data) {
+                        console.log("data:" + data);
+                        $.notify("Soba uspješno dodana");
+
+                        //TODO dodat Notify
+                        UpdateSlobodneSobe();
+                        UpdateRezSobe();
+
+                    }
+
+
+                });
+ 
+
+            });
+
+
+            $("a.RezSobe").click(function (event) {
+                event.stopImmediatePropagation();
+                event.preventDefault();
+                console.log("Prevebnt Test");
+
+                var ele = $(this);
+                console.log("elelment html---" + ele.html());
+
+                var akcija = ele.attr("href");
+                console.log("AKcija---" + akcija);
+
+
+                //--OK--
+                //salji red kontroleru
+                $.ajax({
+                    type: "POST",
+                    url: akcija,
+                    success: function (data) {
+                        console.log("data:" + data);
+                        //TODO dodat Notify
+                        $.notify("Soba uspješno uklonjena");
+                        UpdateSlobodneSobe();
+                        UpdateRezSobe();
+
+                    }
+
+
+                });
+
+
+            });
+
+
+
+
+        }
+
+
+
+        function UpdateSlobodneSobe() {
+            var forma = $("#SobeForma");
+            var formaAction = forma.attr("action");
+
+            console.log("FORMA ---" + forma.html());
+            console.log("FORMA AKCIJA---" + formaAction);
+
+            $.ajax({
+                type: "GET",
+                url: formaAction,
+                data: forma.serialize(),
+                success: function (data) {
+                    console.log("data: iz Forme Akcije" + formaAction + data);
+                    $("#SobePartialDiv").empty();
+                    $("#SobePartialDiv").html(data);
+                }
+            });
+
+        
+            
+        }
+
+
+        function UpdateRezSobe() {
+            
+            $.ajax({
+
+                type: "GET",
+                url: '@Url.Action("_RezSobe", "Rezervacije", new { rezId = Model.rezervacija.RezervacijaId })',
+                success: function (data) {
+                    console.log("data:REZ ACTION------------" + data);
+                    $("#_RezSobelDiv").empty();
+                    $("#_RezSobelDiv").html(data);
+                }
+            });
+
+        }
+
+
+
+
+
+
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*@section Scripts
+        {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#Forma").submit(function (e) {
+                    e.preventDefault();
+                });
+
+
+                $("#Forma").bind("change paste keyup", function () {
+
+
+                    var rezulat = $(this).closest("form").attr("auto-target");
+                    var akcija = $(this).closest("form").attr("action");
+
+                    var forma = $(this).closest("form");
+
+                    console.log("rezultat je " + rezulat);
+                    console.log("akcija je :" + akcija);
+                    console.log("forma je :" + forma);
+
+
+                    $.ajax({
+                        type: "GET",
+                        url: akcija,
+                        data: forma.serialize(),
+                        success: function (data) {
+                            console.log("data:" + data);
+                            $("#TargetDiv").empty();
+                            $("#TargetDiv").html(data);
+                        }
+
+                    });
+
+
+                });
+
+            });
+
+        </script>
+    }*@
+
+

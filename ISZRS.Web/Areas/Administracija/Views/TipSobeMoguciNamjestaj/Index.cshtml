@@ -1,0 +1,104 @@
+﻿@model ISZRS.Web.Areas.Administracija.Models.TipSobeNamjestajVM
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+
+}
+
+<br />
+<h2>Tip sobe @Model.TipSobe.Naziv mogući namještaj</h2>
+@if (Model.zauzeti.Count() > 0)
+{
+    <h2>Tipa namještaja @Model.zauzeti.First().Namjestaj.tipNamjestaja</h2>
+}
+<hr />
+
+
+<div class="row">
+    <h3>Dostupan namještaj</h3>
+    <hr />
+
+    @if (Model.zauzeti.Count() > 0)
+    {
+        @foreach (var item in Model.zauzeti)
+        {
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <img src="data:image;base64,@System.Convert.ToBase64String(item.Namjestaj.Slika)" style="height:300px; width:200px" />
+                    <div class="caption">
+                        <h3>@item.Namjestaj.Ime</h3>
+                        <p>@item.Namjestaj.Opis</p>
+                        <p>@item.Namjestaj.Cijena KM</p>
+                        <p>
+                            <a asp-action="Ukloni" class="btn btn-danger" asp-route-ID="@item.Id">Ukloni</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+</div>
+<br />
+<div>
+    <h3>mogući namještaj</h3>
+    <hr />
+
+    @if (Model.slobodni.Count() > 0)
+    {
+        @foreach (var item in Model.slobodni)
+        {
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <img src="data:image;base64,@System.Convert.ToBase64String(item.Slika)" style="height:300px; width:200px" />
+                    <div class="caption">
+                        <h3>@item.Ime</h3>
+                        <p>@item.Opis</p>
+                        <p>
+                            <a asp-action="Dodaj" class="btn btn-success" asp-route-NamjestajID="@item.Id" asp-route-TipSobeId="@Model.TipSobe.Id">Dodaj </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@*<table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Namjestaj)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TipSobe)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @if (Model != null)
+            {
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Namjestaj.Ime)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TipSobe.Naziv)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+    </table>*@

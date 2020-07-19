@@ -1,0 +1,224 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.ZaduzenejInfoVM
+@{
+    ViewData["Title"] = "Vasa Usluga Info";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+
+}
+
+@{
+    float cijenaDodataka = 0;
+}
+
+<div class="row">
+    <div class="col-lg-5">
+        <h2>@Model.Usluga.Naziv Info</h2>
+        <hr />
+        <img src="data:image;base64,@System.Convert.ToBase64String(Model.Usluga.Slika)" width="300" height="300" />
+        <br />
+        <br />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => Model.Usluga.Naziv)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => Model.Usluga.Naziv)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => Model.Usluga.Opis)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => Model.Usluga.Opis)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => Model.Usluga.Cijena)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => Model.Usluga.Cijena) KM
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => Model.Usluga.TipCijene)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => Model.Usluga.TipCijene)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => Model.Usluga.TipUsluge)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => Model.Usluga.TipUsluge)
+            </dd>
+
+        </dl>
+        @if (Model.Zaduzenje.KrajZaduzivanja > DateTime.Now)
+        {
+            <a asp-action="PonistiUslugu" asp-route-ZaduzenjeID="@Model.Zaduzenje.Id" class="btn  btn-danger">Poništi uslugu</a>
+        }
+
+        <br />
+    </div>
+    <div class="col-lg-5">
+        <br />
+        <br />
+        <br />
+        <div class="row">
+
+            <div class="DivSeperator">
+
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#pill1">Zaduženi gosti</a></li>
+                    <li><a data-toggle="tab" href="#pill2">Slobodni gosti</a></li>
+                </ul>
+
+
+                <div class="tab-content">
+                    <div id="pill1" class="tab-pane fade in active">
+                        <h3>Zaduženi gosti</h3>
+                        @if (Model.ZaduzeniGosti.Count() == 0)
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                Upozerenje! Usluga nema gostiju!
+                            </div>
+                        }
+                        else
+                        {
+                            <p>Gosti rezervacije koji nisu dio usluge</p>
+                            <table class="table table-responsive table-condensed">
+                                @foreach (var item in Model.ZaduzeniGosti)
+                                {
+                                    <tr>
+                                        <td>@item.PunoIme</td>
+                                        <td>
+                                            <a asp-action="UkloniGosta"
+                                               asp-route-ZaduzenjeID="@Model.Zaduzenje.Id"
+                                               asp-route-gostId="@item.Id">
+                                                Ukloni gosta
+                                            </a>
+                                        </td>
+
+                                    </tr>
+
+                                }
+                            </table>
+                        }
+                    </div>
+                    <div id="pill2" class="tab-pane fade">
+                        <h3>Slobodni gosti</h3>
+                        <p>Gosti rezervacije koji nisu dio usluge</p>
+
+                        @if (Model.SlobodniGost.Count() > 0)
+                        {
+                            <table class="table table-responsive ">
+                                @foreach (var item in Model.SlobodniGost)
+                                {
+                                    <tr>
+                                        <td>@item.PunoIme</td>
+                                        <td>
+                                            <a asp-action="DodajGosta"
+                                               asp-route-ZaduzenjeID="@Model.Zaduzenje.Id"
+                                               asp-route-gostId="@item.Id">
+                                                Dodaj gosta
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                }
+                            </table>
+
+                        }
+                        else
+                        {
+                            <h3>Nema slobodnih gostiju</h3>
+                        }
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="DivSeperator">
+
+                <h3>Dodaci</h3>
+                @if (Model.ZauzetiDodaci.Count() > 0)
+                {
+                    <p>Trenutni dodaci:</p>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Naziv</th>
+                                <th>Cijena</th>
+                                <th>Kolicina</th>
+                            </tr>
+                        </thead>
+                        @foreach (var item in Model.ZauzetiDodaci)
+                        {
+                            <tr>
+                                <td>@item.Dodaci.Ime</td>
+
+                                <td>
+                                    @if (item.Dodaci.JeUkljucen)
+                                    {
+                                        <span>Besplatan</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@item.Dodaci.Cijena KM</span>
+                                    }
+                                </td>
+                                <td>@item.Kolicina</td>
+
+                                @{
+                                    cijenaDodataka += item.Kolicina * item.Dodaci.Cijena;
+                                }
+                            </tr>
+                        }
+                    </table>
+                }
+                else
+                {
+                    <h4>Nema dodataka</h4>
+                }
+                <br />
+                <a asp-action="UrediDodatkeZaduzenja" asp-route-zaduzenjeId="@Model.Zaduzenje.Id" class="btn btn-info pull-left">Uredi dodatke</a>
+                <br />
+                <h3 class="pull-right">Ukupna cijena: @Model.Zaduzenje.UkupnaCijena KM</h3>
+                <br />
+                <br />
+
+            </div>
+
+        </div>
+        <a id="NazadLink" asp-action="Index" asp-route-rezId="@Model.Zaduzenje.RezervacijaId" class="btn btn-block btn-default">Nazad</a>
+    </div>
+
+
+</div>
+
+
+@section Scripts{
+
+    <script>
+
+        //jQuery(document).ready(function ($) {
+
+        //    if (window.history && window.history.pushState) {
+
+        //        window.history.pushState('forward', null, './#forward');
+
+        //        $(window).on('popstate', function () {
+        //            //alert('Back button was pressed.');
+
+        //            var linknazad = $("#NazadLink").attr("href");
+
+        //            window.location.href = linknazad;
+        //        });
+
+        //    }
+        //});
+
+
+    </script>
+
+}

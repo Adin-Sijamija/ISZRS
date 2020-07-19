@@ -1,0 +1,44 @@
+﻿@model ISZRS.Data.Models.TipSobeNamjestaj
+@using ISZR.Web.Models
+
+@{
+    ViewData["Title"] = "Uredi";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Uredi tip sobe naještaja</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="TipSobeID" class="control-label">Tip sobe</label>
+                <select asp-for="TipSobeID" class="form-control" asp-items="ViewBag.TipSobeID"></select>
+                <span asp-validation-for="TipSobeID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TipNamjestaja" class="control-label">Tip namještaja</label>
+                <select asp-for="TipNamjestaja" asp-items="@Html.GetEnumSelectList<Namjestaj.TipNamjestaja>()" class="form-control"></select>
+                <span asp-validation-for="TipNamjestaja" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Kolicina" class="control-label"></label>
+                <input asp-for="Kolicina" class="form-control" />
+                <span asp-validation-for="Kolicina" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Snimi" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-default">Nazad</a>
+
+</div>
+

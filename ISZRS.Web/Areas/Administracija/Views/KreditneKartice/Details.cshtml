@@ -1,0 +1,44 @@
+﻿@model ISZR.Web.Models.KreditneKartice
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>KreditneKartice</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.VaziDo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.VaziDo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BrojKartice)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BrojKartice)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CVV)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CVV)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TipKartice)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TipKartice.Naziv)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

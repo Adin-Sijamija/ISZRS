@@ -1,0 +1,61 @@
+﻿@model IEnumerable<ISZR.Web.Models.Sobe>
+
+@{
+    ViewData["Title"] = "Sobe";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Sve sobe</h2>
+<br />
+<p>
+    <a asp-action="Create" class="btn btn-default">Nova Soba</a>
+    
+</p>
+<p><a asp-action="Index"asp-controller="TipSoba" class="btn btn-block btn-default">Tipovi soba</a></p>
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BrojSobe)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BrojSprata)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cijena)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.TipSobe)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BrojSobe)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BrojSprata)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cijena)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TipSobe.Naziv)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Uredi</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalji</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Obriši</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />

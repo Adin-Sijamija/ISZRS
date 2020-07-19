@@ -1,0 +1,100 @@
+﻿@model IEnumerable<ISZR.Web.Models.Hrana>
+
+@{
+    ViewData["Title"] = "Sva Jela";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Sva Jela</h2>
+<hr />
+<p>
+    <a asp-action="Create" class="btn btn-default">Nova Jela</a>
+</p>
+<br />
+<div class="row">
+
+    @foreach (var item in Model)
+    {
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail">
+                <img src="data:image;base64,@System.Convert.ToBase64String(item.Slika)" />
+                <div class="caption">
+                    <h3>@item.Naziv</h3>
+                    <p>Info: @item.Opis</p>
+                    <p>cijena: @item.Cijena KM</p>
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            Opcije
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li>
+                                <a asp-action="Edit" asp-route-id="@item.Id">Uredi</a>
+                            </li>
+                            <li>
+                                <a asp-action="Details" asp-route-id="@item.Id">Detalji</a>
+                            </li>
+                            <li>
+                                <a asp-action="Delete" asp-route-id="@item.Id">Obriši</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+@*<table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Naziv)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Opis)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cijena)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Slika)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Naziv)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Opis)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cijena)
+                </td>
+                <td>
+                    @if (item.Slika != null)
+                    {
+                        <img src="data:image;base64,@System.Convert.ToBase64String(item.Slika)" width="120" height="120" />
+
+                    }
+                    else
+                    { <p>nema slike</p>}
+
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>*@

@@ -1,0 +1,39 @@
+﻿@model ISZR.Web.Models.Hrana
+
+@{
+    ViewData["Title"] = "Detalji jela";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Detalji jela</h2>
+<hr />
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Naziv)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Naziv)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Opis)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Opis)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Cijena)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Cijena)
+        </dd>
+       
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-default">Uredi</a> |
+    <a asp-action="Index" class="btn btn-default">Nazad</a>
+
+</div>

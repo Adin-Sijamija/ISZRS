@@ -1,0 +1,99 @@
+﻿@{
+    ViewData["Title"] = "ISZR";
+    Layout = "~/Views/Shared/_LayoutPocetna.cshtml";
+
+}
+
+@using Microsoft.AspNetCore.Identity
+@using ISZRS.Web.Areas.Identity.Data
+@inject SignInManager<ZaposlenikISZRSWebUser> SignInManager
+@inject UserManager<ZaposlenikISZRSWebUser> UserManager
+
+
+
+
+<div class="row">
+
+    <div class="col-md-8">
+        <div class="titleFloat">
+            <ul class="Logo">
+                <li>
+                    <p>
+                        I
+                        <span>Informacioni</span>
+                    </p>
+
+                </li>
+                <li>
+                    <p>
+                        S
+                        <span>Sistem</span>
+                    </p>
+
+
+                </li>
+                <li>
+                    <p>
+                        Z
+                        <span>ZA</span>
+                    </p>
+
+                </li>
+                <li>
+                    <p>
+                        R
+                        <span>Recepcisku</span>
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        S
+                        <span>Službu</span>
+
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+
+    <div class="col-md-4 LogIn ">
+        <br />
+        <br />
+        <br />
+        <br />
+        <form method="post" asp-action="PrijaviSe">
+
+            <div class="form-group">
+                <input placeholder="Korisničko ime" name="username" class="form-control" required type="text" />
+            </div>
+            <div class="form-group">
+                <input placeholder="Šifra" class="form-control" name="password" required type="password" />
+            </div>
+            <input type="submit" class="btn" value="Prijavi se " />
+
+            <h5>Administrator: AdinSijamija</h5>
+            <h5>šifra: AdinSijamija_23</h5>
+            <br />
+            <br />
+            @if (ViewBag.Greska != null)
+            {
+                <h1 style="color:red">@ViewBag.Greska</h1>
+            }
+        </form>
+
+
+    </div>
+</div>
+<style>
+
+    body {
+        padding-top: 50px;
+        padding-bottom: 20px;
+        background-image: url(../images/Pocetna.jpg);
+        background-repeat: no-repeat;
+        background-size: auto;
+        min-height: 100%
+    }
+</style>

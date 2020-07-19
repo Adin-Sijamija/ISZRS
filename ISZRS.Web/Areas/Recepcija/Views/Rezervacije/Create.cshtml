@@ -1,0 +1,49 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.NovaRezervacijaVM
+
+@{
+    ViewData["Title"] = "Nova Rezervacija";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Nova Rezeracija</h2>
+
+<h4>Korak I: Odabir Datuma</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4" style="border:2px solid red">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="rezervacije.DatumPocetkaRezerviranja" class="control-label"></label>
+                <input asp-for="rezervacije.DatumPocetkaRezerviranja" class="form-control" />
+                <span asp-validation-for="rezervacije.DatumPocetkaRezerviranja" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="rezervacije.DatumZavrsetkaRezerviranja" class="control-label"></label>
+                <input asp-for="rezervacije.DatumZavrsetkaRezerviranja" class="form-control" />
+                <span asp-validation-for="rezervacije.DatumZavrsetkaRezerviranja" class="text-danger"></span>
+            </div>
+
+
+            <div></div>
+
+            <div class="form-group">
+                <input type="submit" value="Snimi" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-1" style="border:2px solid red"></div>
+    <div class="col-md-4" style="border:2px solid red"></div>
+</div>
+
+
+
+
+<h3>Dodaj partial za vrijeme i slobodne sobe</h3>
+
+<div>
+    <a class="btn btn-default" asp-action="Index" asp-controller="Pocetna" asp-area="Recepcija">Nazad</a>
+
+</div>
+

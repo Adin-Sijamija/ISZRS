@@ -1,0 +1,27 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.UslugaRezervacijaDodavanjeVM
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+<form asp-action="NovaUslugaDnevno" method="post" id="DnevnoForma">
+
+    <input name="rezId" value="@Model.Rezervacija.RezervacijaId" hidden="hidden" />
+    <input name="uslugaId" value="@Model.Usluga.Id" hidden="hidden" />
+
+    <div class="form-group">
+        <label class="control-label"> Datum pocetka usluge</label>
+        <input class="form-control" id="DnevnoDatumPocetka"  name="DatumPocetka" type="date" value="@Model.Rezervacija.DatumPocetkaRezerviranja.ToString("yyyy-MM-dd")" />
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Datum Zavrsetka</label>
+        <input class="form-control" id="DnevnoDatumZavrsetka"  name="DatumZavrsetka" type="date" value="@Model.Rezervacija.DatumZavrsetkaRezerviranja.ToString("yyyy-MM-dd")" />
+    </div>
+
+    <h4 style="display:none" class="animated fadeInUp" id="DnevnoInfoDiv">Cijena po gostu: <span id="DnevnoInfoDivCijena">0</span> KM</h4>
+
+    <div class="form-group">
+        <input type="submit" value="Snimi" class="btn btn-success" />
+    </div>
+</form>

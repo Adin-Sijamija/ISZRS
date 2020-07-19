@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewData["Title"] = "Logistika Sobe";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Logistika Sobe</h2>
+<hr />
+
+<div class=" row">
+
+    <div class="row">
+        <div class="col-xs-6 col-md-3">
+            <div class="thumbnail">
+
+                <a asp-action="Index" asp-controller="Sobe" class="thumbnail">
+                    <img src="~/images/SobeLink.jpg" class="img-responsive" style="height:400px; width:200px; object-fit:cover" />
+                </a>
+                <h3>Sobe</h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-xs-6 col-md-3">
+            <div class="thumbnail">
+
+                <a asp-controller="TipSoba" asp-area="Administracija" asp-action="Index" class="thumbnail">
+                    <img src="~/images/tipovisoba.jpg" class="img-responsive" style="height:400px; width:200px; object-fit:cover" />
+                </a>
+                <h3>Tipovi soba</h3>
+
+            </div>
+        </div>
+
+        @*<div class="col-xs-6 col-md-3">
+            <div class="thumbnail">
+
+                <a asp-controller="TipSobeNamjestaj" asp-area="Administracija" asp-action="Index" class="thumbnail">
+                    <img src="~/images/usluge4.jpg" class="img-responsive" style="height:400px; width:200px; object-fit:cover" />
+                </a>
+                <h3>Tipovi soba količina namještaja</h3>
+            </div>
+        </div>*@
+        <div class="col-xs-6 col-md-3">
+            <div class="thumbnail">
+
+                <a asp-controller="TipSobeNamjestaj" asp-area="Administracija" asp-action="Index" class="thumbnail">
+                    <img src="~/images/Logistika.jpg" class="img-responsive" style="height:400px; width:200px; object-fit:cover" />
+                </a>
+                <h3>Tipovi soba mogući namještaj</h3>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+

@@ -1,0 +1,54 @@
+﻿@model ISZR.Web.Models.Dodaci
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Detalji dodataka</h2>
+<hr />
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Ime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Ime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Opis)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Opis)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Cijena)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Cijena)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.JeUkljucen)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.JeUkljucen)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Slika)
+        </dt>
+        <dd>
+            @if (Model.Slika != null)
+            {
+                <img src="data:image;base64,@System.Convert.ToBase64String(Model.Slika)" width="120" height="120" />
+
+            }
+            else
+            { <p>nema slike</p>}
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-default">Uredi</a> |
+    <a asp-action="Index"  class="btn btn-default">Nazad</a>
+</div>

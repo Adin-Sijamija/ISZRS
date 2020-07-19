@@ -1,0 +1,43 @@
+﻿@model IEnumerable<ISZRS.Data.Models.Rezervacije>
+
+@{
+    ViewData["Title"] = "Prijasnje rezervacije";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Prijašnje rezervacije</h2>
+<hr />
+
+<table class="table table-hover table-responsive">
+    <thead>
+        <tr>
+            <th>Broj Rezervacije</th>
+            <th>Datum Početka</th>
+            <th>Datum Završetka</th>
+            <th>Rezervisao</th>
+            <th>Račun</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Count() > 0)
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.RezervacijaId</td>
+                    <td>@item.DatumPocetkaRezerviranja</td>
+                    <td>@item.DatumZavrsetkaRezerviranja</td>
+                    <td>@item.GlavniGost.PunoIme</td>
+                    <td>
+                        <a asp-action="GetRacunPDf" asp-controller="Racun" asp-route-rezId="@item.RezervacijaId" class="btn" target="_blank">Račun</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+
+</table>
+
+
+
+

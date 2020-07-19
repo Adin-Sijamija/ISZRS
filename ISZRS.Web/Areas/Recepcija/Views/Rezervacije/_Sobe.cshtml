@@ -1,0 +1,73 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.RezervacijaVM
+
+
+
+<div id="_SobeDiv" class="panel panel-default">
+    <table id="_SobeDivTable" class="table table-hover">
+        <thead>
+            <tr>
+              
+                <th>
+                    <a> Broj Sobe</a>
+                </th>
+                <th>
+                    <a>Broj Sprata</a>
+                </th>
+                <th>
+                    <a> Tip Sobe</a>
+                </th>
+                <th>
+                    <a>Cijena</a>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody class="_SobeDivTBody">
+            @if (Model != null)
+            {
+                @foreach (var item in Model.SlobodneSobe)
+                {
+                    <tr>
+                      
+                        <td id="BrojSobe">
+                            @Html.DisplayFor(modelItem => item.BrojSobe)
+                        </td>
+                        <td id="BrojSprata">
+                            @Html.DisplayFor(modelItem => item.BrojSprata)
+                        </td>
+                        <td id="TipSobe">
+                            @Html.DisplayFor(modelItem => item.TipSobe.Naziv)
+                        </td>
+                        <td id="Cijena">
+                            @Html.DisplayFor(modelItem => item.Cijena) KM dnevno
+                        </td>
+
+
+                        <td id="Link">
+                            <a class="Sobe" asp-action="_DodajSobu" asp-controller="Rezervacije"
+                               asp-route-sobaID="@item.Id"
+                               asp-route-rezId="@Model.rezervacija.RezervacijaId">
+
+                                <span class="glyphicon glyphicon-ok"></span>
+                            </a>
+
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <div style="text-align:center">
+        <a class="StrelicaNazad">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+
+        <a class="StreliceNaprijed">
+           <span class="glyphicon glyphicon-chevron-right"></span>
+
+        </a>
+        <h5 id="ZadnjaStranica">@TempData["ZadnjaStranica"]</h5>
+    </div>
+
+</div>
+

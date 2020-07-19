@@ -1,0 +1,59 @@
+﻿@model IEnumerable<ISZR.Web.Models.NarudzbaHrana>
+
+@{
+    float ukupno = 0;
+}
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                Naziv
+            </th>
+
+            <th>
+                Količina
+            </th>
+            <th>
+                Cijena
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Hrana.Naziv)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Kolicina)
+                    </td>
+                    <td>
+                        @(item.Kolicina * item.Hrana.Cijena)
+
+                        @{
+                            ukupno += item.Kolicina * item.Hrana.Cijena;
+                        }
+                    </td>
+
+                    <td>
+                        <form asp-action="Ukloni" asp-controller="Narudjba" method="post" class="UkloniKorpa">
+                            <input name="NarudznaHranaID" value="@item.Id" hidden="hidden" />
+                            <input type="submit" value="Ukloni" />
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<h4>Cijena:<b>@(ukupno) KM</b></h4>

@@ -1,0 +1,51 @@
+﻿@model IEnumerable<ISZR.Web.Models.Dodaci>
+
+@{
+    ViewData["Title"] = "Svi dodaci";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+}
+<br />
+<h2>Svi dodaci </h2>
+<hr />
+<p>
+    <a asp-action="Create" class="btn btn-default">Novi dodatak</a>
+</p>
+
+
+
+<div class="row">
+
+    @foreach (var item in Model)
+    {
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail">
+                <img src="data:image;base64,@System.Convert.ToBase64String(item.Slika)"  style="object-fit:scale-down; height:300px; width:200px; "/>
+                <div class="caption">
+                    <h3>@item.Ime</h3>
+                    <p>Info: @item.Opis</p>
+                    <p>cijena: @item.Cijena KM</p>
+                    <p>Besplatan dio usluge: @(item.JeUkljucen?"DA":"NE")</p>
+                    <h4> Dio usluge:@item.Usluga.Naziv</h4>
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            Opcije
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li>
+                                <a asp-action="Edit" asp-route-id="@item.Id">Uredi</a>
+                            </li>
+                            <li>
+                                <a asp-action="Details" asp-route-id="@item.Id">Detalji</a>
+                            </li>
+                            <li>
+                                <a asp-action="Delete" asp-route-id="@item.Id">Obriši</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

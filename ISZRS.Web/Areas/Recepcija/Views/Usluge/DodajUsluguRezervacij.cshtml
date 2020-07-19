@@ -1,0 +1,461 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.UslugaRezervacijaDodavanjeVM
+@{
+    ViewData["Title"] = "Dodaj Uslugu Rezervacij";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Dodaj uslugu rezervacij</h2>
+
+<hr />
+
+<form hidden="hidden" >
+
+    <input type="date" id="RezPocetak" class="form-control" asp-for="@Model.Rezervacija.DatumPocetkaRezerviranja" />
+    <input type="date" id="RezKraj" class="form-control" asp-for="@Model.Rezervacija.DatumZavrsetkaRezerviranja" />
+
+    @*<p>@Model.Rezervacija.DatumZavrsetkaRezerviranja.ToLongDateString()</p>
+        <input type="date" value="@Model.Rezervacija.DatumZavrsetkaRezerviranja.ToShortDateString() " />*@
+
+</form>
+<div class="row">
+    <div class="col-md-4">
+
+
+        @if ((int)Model.Usluga.TipCijene == 0 || (int)Model.Usluga.TipCijene == 2)
+        {
+
+            await Html.RenderPartialAsync("_DodajUsluguDefault", Model);
+        }
+
+        @if ((int)Model.Usluga.TipCijene == 1)
+        {
+            await Html.RenderPartialAsync("_DodajUsluguPoSatu", Model);
+
+
+        }
+        @if ((int)Model.Usluga.TipCijene == 3)
+        {
+            await Html.RenderPartialAsync("_DodajUsluguDnevno", Model);
+
+        }
+        @if ((int)Model.Usluga.TipCijene == 4)
+        {
+            await Html.RenderPartialAsync("_DodajUsluguSedmicno", Model);
+
+        }
+
+
+    </div>
+    <div class="col-md-1">
+    </div>
+
+    <div class="col-md-4">
+    
+        <div class="row">
+            <div class="col-md-5">
+                <dl>
+                    <dt>Broj rezervacije</dt>
+                    <dd>@Model.Rezervacija.RezervacijaId</dd>
+
+                    <dt>Datum rezervacije:</dt>
+                    <dd>@(Model.Rezervacija.DatumPocetkaRezerviranja.Date.ToShortDateString() + " -- " + @Model.Rezervacija.DatumZavrsetkaRezerviranja.Date.ToShortDateString())  </dd>
+
+
+                </dl>
+                <br />
+
+
+
+
+                <dl>
+                    <dt>Naziv Usluge</dt>
+                    <dd>@Model.Usluga.Naziv</dd>
+
+                    <dt>Info:</dt>
+                    <dd>@Model.Usluga.Opis</dd>
+
+                    <dt>Cijena</dt>
+                    <dd id="CijenaDD" cijena="@Model.Usluga.Cijena">@Model.Usluga.Cijena KM</dd>
+
+                    <dt>Vrsta Placanja</dt>
+                    <dd>@Model.Usluga.TipCijene</dd>
+
+                    <dt>Tip Usluge:</dt>
+                    <dd>@Model.Usluga.TipUsluge</dd>
+
+                </dl>
+
+            </div>
+            <div class="col-md-6">
+                <img src="data:image;base64,@System.Convert.ToBase64String(Model.Usluga.Slika)" class="zoom" style="object-fit:scale-down; height:400px; width:300px" />
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation/dist/additional-methods.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+                $(function () {
+
+                    jQuery.validator.addMethod("VeciOdPocetkaRezervacije", function (value, element, param) {
+
+                        var pocetak = $("#RezPocetak").val();
+                        var ovo = value;
+
+                        var RezStart = new Date(pocetak);
+                        var Ovo = new Date(ovo);
+                        return RezStart <= Ovo;
+                    }, "Datum mora biti veci/jednak od pocetka rezervacije "+'@Model.Rezervacija.DatumPocetkaRezerviranja.ToShortDateString()');
+                    jQuery.validator.addMethod("ManjiOdZavrsetkaRezervacije", function (value, element, param) {
+
+                        var kraj = $("#RezKraj").val();
+                        var ovo = value;
+
+                        var RezKraj = new Date(kraj);
+                        var Ovo = new Date(ovo);
+                        return Ovo <= RezKraj;
+                    }, "Datum mora biti manji/jednak od kraja rezervacije "+'@Model.Rezervacija.DatumZavrsetkaRezerviranja.ToShortDateString()');
+
+                      jQuery.validator.addMethod("ManjiOdZavrsetkaDnevno", function (value, element, param) {
+
+                          var kraj = $("#DnevnoDatumZavrsetka").val();
+                                    var ovo = value;
+
+                                    var RezKraj = new Date(kraj);
+                                    var Ovo = new Date(ovo);
+                                    return Ovo < RezKraj;
+                      }, "Datum pocetka mora biti manji od datuma zavrsetka usluge");
+
+                      jQuery.validator.addMethod("VeciOdPocetkaDnevno", function (value, element, param) {
+
+                          var kraj = $("#DnevnoDatumPocetka").val();
+                            var ovo = value;
+
+                            var RezKraj = new Date(kraj);
+                            var Ovo = new Date(ovo);
+                            return Ovo > RezKraj;
+                      }, "Datum zavrestka mora biti veci od datuma pocetka usluge");
+
+                    jQuery.validator.addMethod("ManjiOdZavrsetkaSedmicno", function (value, element, param) {
+
+                        var kraj = $("#SedmicnoDatumZavrsetka").val();
+                        var ovo = value;
+
+                        var RezKraj = new Date(kraj);
+                        var Ovo = new Date(ovo);
+                        return Ovo < RezKraj;
+                    }, "Datum pocetka mora biti manji od datuma zavrsetka usluge");
+
+                    jQuery.validator.addMethod("VeciOdPocetkaSedmicno", function (value, element, param) {
+
+                        var kraj = $("#SedmicnoDatumPocetka").val();
+                        var ovo = value;
+
+                        var RezKraj = new Date(kraj);
+                        var Ovo = new Date(ovo);
+                        return Ovo > RezKraj;
+                    }, "Datum zavrestka mora biti veci od datuma pocetka usluge");
+
+                    jQuery.validator.addMethod("ManjiOdZavrsetkaDefault", function (value, element, param) {
+
+                        var kraj = $("#DefaultDatumZavrsetka").val();
+                        var ovo = value;
+
+                        var RezKraj = new Date(kraj);
+                        var Ovo = new Date(ovo);
+                        return Ovo < RezKraj;
+                    }, "Datum pocetka mora biti manji od datuma zavrsetka usluge");
+
+                    jQuery.validator.addMethod("VeciOdPocetkaDefault", function (value, element, param) {
+
+                        var kraj = $("#DefaultDatumPocetka").val();
+                        var ovo = value;
+
+                        var RezKraj = new Date(kraj);
+                        var Ovo = new Date(ovo);
+                        return Ovo > RezKraj;
+                    }, "Datum zavrestka mora biti veci od datuma pocetka usluge");
+
+                    jQuery.validator.addMethod("VeciOdDanas", function (value, element, param) {
+
+                      
+                        var ovo = value;
+
+                        var Danas = new Date;
+                        var Ovo = new Date(ovo);
+
+
+
+                        if (Ovo.getFullYear() === Danas.getFullYear()) {
+
+                            if (Ovo.getMonth() === Danas.getMonth()) {
+
+                                if (Ovo.getDay() === Danas.getDay()) {
+                                    return true;
+                                }
+
+                            }
+                        }
+
+
+
+
+                        return Ovo > Danas;
+                    }, "Datum pocetka usluge mora biti veci/jednak današnjem datumu");
+
+
+                    //Dnevno validation Start
+                    $("#DnevnoForma").validate({
+                        rules: {
+                            DatumPocetka: {
+                                required:true,
+                                VeciOdPocetkaRezervacije: true,
+                                ManjiOdZavrsetkaRezervacije: true,
+                                ManjiOdZavrsetkaDnevno: true,
+                                VeciOdDanas: true
+
+                            },
+                            DatumZavrsetka: {
+                                required: true,
+                                VeciOdPocetkaRezervacije: true,
+                                ManjiOdZavrsetkaRezervacije: true,
+                                VeciOdPocetkaDnevno:true
+
+                            }
+                        }
+
+
+                    });
+
+                    $("#DnevnoForma :input").change(function () {
+
+                        if (!$("#DnevnoForma").valid()) {
+                            $("#DnevnoInfoDiv").hide(2000);
+
+                        }
+
+                        if ($("#DnevnoForma").valid() ) {
+
+                            var Pocetak = $("#DnevnoDatumPocetka").val();
+                            var Kraj = $("#DnevnoDatumZavrsetka").val();
+
+
+
+                                var DatumKraj = new Date(Kraj);
+                                var DatumPocetka = new Date(Pocetak);
+
+                                console.log(Pocetak);
+                                console.log(Kraj);
+
+                                console.log(DatumKraj);
+                                console.log(DatumPocetka);
+                                var diff2 = new Date(DatumKraj - DatumPocetka);
+
+                                // get days
+                                var days = diff2 / 1000 / 60 / 60 / 24;
+
+                                var Cijena = $("#CijenaDD").attr("cijena");
+
+                                //alert("CIJENA JE " + Cijena);
+
+
+
+                            var UkupnaCijena = parseFloat(Cijena * days);
+
+                            console.log("daba JE..." + days);
+                            console.log("CIJENA JE..." + Cijena);
+                            console.log("ukupno  JE..." + UkupnaCijena);
+
+
+
+                            $("#DnevnoInfoDivCijena").html(UkupnaCijena);
+                            $("#DnevnoInfoDiv").show(2000);
+
+                                ///alert(days);
+
+                                //alert("VALID");
+                            }
+                        });
+
+                    //Dnevno Validation end
+
+                    //poSatuForma Validation start
+                    $("#PoSatuForma").validate({
+                        rules: {
+                            DatumPocetka: {
+                                required: true,
+                                VeciOdPocetkaRezervacije: true,
+                                ManjiOdZavrsetkaRezervacije: true,
+                                VeciOdDanas: true
+
+
+                            },
+                            VrijemePocetka: {
+                                required: true
+
+
+                            },
+                            sati: {
+                                required: true
+                            }
+
+                        }
+                    });
+
+                    $("#PoSatuForma :input").change(function () {
+
+                        if (!$("#PoSatuForma").valid()) {
+                            $("#PosatuInfoDiv").hide(2000);
+
+                        }
+
+                        if ($("#PoSatuForma").valid()) {
+
+
+                            var Cijena = $("#CijenaDD").attr("cijena");
+                            var Brojsati = $("#BrojSati").val();
+                            //alert("CIJENA JE " + Cijena);
+
+                            var UkupnaCijena = parseFloat(Cijena * Brojsati);
+                            $("#PoSatuInfoDivCijena").html(UkupnaCijena);
+                            $("#PosatuInfoDiv").show();
+
+                            ///alert(days);
+
+                            //alert("VALID");
+                        }
+                    });
+
+                 //poSatuForma Validation end
+
+                    //Dnevno validation Start
+                    $("#SedmicnoForma").validate({
+                        rules: {
+                            DatumPocetka: {
+                                required: true,
+                                VeciOdPocetkaRezervacije: true,
+                                ManjiOdZavrsetkaRezervacije: true,
+                                ManjiOdZavrsetkaSedmicno: true
+
+                            },
+                            DatumZavrsetka: {
+                                required: true,
+                                VeciOdPocetkaRezervacije: true,
+                                ManjiOdZavrsetkaRezervacije: true,
+                                VeciOdPocetkaSedmicno: true
+
+                            }
+                        }
+
+
+                    });
+
+
+                    $("#SedmicnoForma #SedmicnoDatumPocetka").change(function () {
+
+                        if (!$("#SedmicnoForma").valid()) {
+                            $("#SedmicnoInfoDiv").hide(2000);
+
+                        }
+
+                        if ($("#SedmicnoForma").valid()) {
+
+
+
+
+                            var Pocetak = $("#SedmicnoDatumPocetka").val();
+
+
+
+                            var DatumPocetka = new Date(Pocetak);
+
+                            console.log(Pocetak);
+
+                            console.log(DatumPocetka);
+
+
+                            var Kraj = new Date();
+                            var numberOfDaysToAdd = 7;
+                            Kraj.setDate(DatumPocetka.getDate() + numberOfDaysToAdd);
+    
+
+                            var krajRezervacije = $("#RezKraj").val();
+                            var DatumZavrsetkaRezervacije = new Date(krajRezervacije);
+
+
+
+                            if (Kraj > DatumZavrsetkaRezervacije) {
+                                Kraj = DatumZavrsetkaRezervacije;
+                                $("#SedmicnoInfoDiv").show(2000);
+                                console.log("Kraj veci od kraja rezervacije");
+                            } else {
+                                $("#SedmicnoInfoDiv").hide(2000);
+
+                            }
+
+
+                            var day = ("0" + Kraj.getDate()).slice(-2);
+                            var month = ("0" + (Kraj.getMonth() + 1)).slice(-2);
+
+                            var today = Kraj.getFullYear() + "-" + (month) + "-" + (day);
+
+                           
+                            $("#SedmicnoDatumZavrsetka").val(today);
+
+
+                            //var Cijena = $("#CijenaDD").attr("cijena");
+
+                            //var UkupnaCijena = parseFloat(Cijena * Brojsati);
+                            //$("#PoSatuInfoDivCijena").html(UkupnaCijena);
+                            //$("#PosatuInfoDiv").show();
+
+                        }
+                    });
+
+                    //Dnevno Validation end
+
+                    //Default validation start
+                    $("#DefaultForma").validate({
+                        rules: {
+                            DatumPocetka: {
+                                required: true,
+                                VeciOdPocetkaRezervacije: true,
+                                ManjiOdZavrsetkaRezervacije: true,
+                                ManjiOdZavrsetkaDefault: true,
+                                VeciOdDanas: true
+
+
+                            },
+                            DatumZavrsetka: {
+                                required: true,
+                                VeciOdPocetkaRezervacije: true,
+                                ManjiOdZavrsetkaRezervacije: true,
+                                VeciOdPocetkaDefault: true
+
+                            }
+                        }
+
+
+                    });
+
+
+                    $.extend($.validator.messages, { required: "Obavezno polje" });
+
+            });
+
+
+
+        });
+
+
+    </script>
+}

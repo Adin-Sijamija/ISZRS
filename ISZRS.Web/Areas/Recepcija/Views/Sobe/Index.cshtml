@@ -1,0 +1,66 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.SobeURezervacijList
+
+@{
+    ViewData["Title"] = "Zaduzene Sobe";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <br />
+    <h3>Sve sobe u rezervaciji</h3>
+    <hr />
+    <div class="col-lg-1">
+    </div>
+
+    <div class="col-lg-10">
+
+        <br />
+        @foreach (var item in Model.zauzetaSoba)
+        {
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title" style="font:xx-large">
+                        Soba broj: @item.soba.BrojSobe
+                    </h4>
+                </div>
+                <div class="panel-body">
+
+                    <div class="col-md-5">
+                        <dl>
+                            <dt>Broj sprata</dt>
+                            <dd>@item.soba.BrojSprata</dd>
+                            <dt>Tip sobe</dt>
+                            <dd>@item.soba.TipSobe.Naziv</dd>
+                            <dt>Broj Gostiju</dt>
+                            <dd>@item.ZaduzeneSoba.GostaSoba.Count()</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                    <div class="col-md-5">
+                        <br />
+                        <a asp-action="DodajNamjestaj" asp-controller="Sobe"
+                           asp-route-SobaZaduzenjeId="@item.ZaduzeneSoba.Id" class="btn btn-block btn-default">Uredi namještaj</a>
+                        @*<a asp-action="DodajUsluge" asp-controller="Soba" class="btn btn-default">Dodaj uslugu</a>*@
+                        <a asp-action="Index" asp-controller="Narudjba"
+                           asp-route-SobaZaduzenjeId="@item.ZaduzeneSoba.Id" class="btn btn-block btn-default">Narudžbe</a>
+                        @if (!Model.Rezervacija.RezervacijaAktivna)
+                        {
+                            <a asp-action="DodajGoste" asp-controller="Gosti"
+                               asp-route-Id="@Model.Rezervacija.RezervacijaId" class="btn btn-block btn-default">Uredi Goste</a>
+
+                        }
+                    </div>
+                </div>
+            </div>
+
+
+
+        }
+
+    </div>
+    <div class="col-lg-1">
+    </div>
+
+</div>

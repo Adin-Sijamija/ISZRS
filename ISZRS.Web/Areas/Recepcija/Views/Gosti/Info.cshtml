@@ -1,0 +1,199 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.GostInfoVM
+
+@{
+    ViewData["Title"] = "Info";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<h2>Informacije Gosta</h2>
+<h3>@Model.Gost.PunoIme</h3>
+<hr />
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <dl class="dl-horizontal">
+                <dt>
+                    Ime prezime:
+                </dt>
+                <dd>
+                    @Model.Gost.PunoIme
+                </dd>
+                <dt>
+                    Država:
+                </dt>
+                <dd>
+                    @Model.Gost.Gradovi.Drzave.Naziv
+                </dd>
+                <dt>
+                    Grad:
+                </dt>
+                <dd>
+                    @(Model.Gost.Gradovi.Naziv + " " + Model.Gost.Gradovi.Regija ?? " ")
+                </dd>
+                <dt>
+                    Adresa:
+                </dt>
+                <dd>
+                    @Model.Gost.Adresa
+                </dd>
+
+
+            </dl>
+
+            @if (Model.Kartica != null)
+            {
+                <h3>
+                    Kreditna kartica
+                </h3>
+
+                <dl class="dl-horizontal">
+                    <dt>
+                        BrojKartice
+                    </dt>
+                    <dd>
+                        @Model.Kartica.BrojKartice
+                    </dd>
+                    <dt>
+                        CVV
+                    </dt>
+                    <dd>
+                        @Model.Kartica.CVV
+                    </dd>
+                    <dt>
+                        Validna do
+                    </dt>
+                    <dd>
+                        @Model.Kartica.VaziDoDatum.ToShortDateString()
+                    </dd>
+                </dl>
+            }
+            else
+            {
+                <h3>Gost nema kreditnu karticu</h3>
+
+            }
+            <br>
+            <a asp-action="Index" asp-controller="Pocetna" class="btn btn-default"> Nazad</a>
+        </div>
+
+        <div class="col-md-7">
+            <div class="row">
+
+                @if (Model.TrenutnaRezervacija != null)
+                {
+                    <div class="col-md-6">
+                        <h3>Trenutna Rezervacija</h3>
+                        <dl>
+                            <dt>Datum početka:</dt>
+                            <dd>@Model.TrenutnaRezervacija.DatumPocetkaRezerviranja.ToShortDateString()</dd>
+                            <dt>Datum zavšetka:</dt>
+                            <dd>@Model.TrenutnaRezervacija.DatumZavrsetkaRezerviranja.ToShortDateString()</dd>
+                            <dt>Rezervisao:</dt>
+                            <dd>@Model.TrenutnaRezervacija.GlavniGost.PunoIme</dd>
+
+
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <hr />
+                        <a class="btn btn-default btn block" asp-action="Info" asp-controller="Rezervacije" asp-route-id="@Model.TrenutnaRezervacija.RezervacijaId">Rezervacija Info </a>
+                        <br />
+                        <a class="btn btn-default btn block" asp-action="Index" asp-controller="Narudjba" asp-route-SobaZaduzenjeId="@Model.GostovaSoba.Id">Nova Naruđba</a>
+                        <br />
+                        <a class="btn btn-default btn block" asp-action="DodajNamjestaj" asp-controller="Sobe" asp-route-SobaZaduzenjeId="@Model.GostovaSoba.Id">Uredi Namještaj</a>
+                        <br />
+                        <a class="btn btn-default btn block" asp-action="RezervacijaZaduzenja" asp-controller="Usluge" asp-route-rezId="@Model.TrenutnaRezervacija.RezervacijaId">Nova Usluga </a>
+                        <br />
+                    </div>
+                }
+                else
+                {
+                    <br />
+                    <br />
+                    <h3>Gost nema trenutnu rezervaciju</h3>
+                    <br />
+
+                }
+
+
+            </div>
+            <hr />
+            <h3>Ostale Rezervacije</h3>
+            <br />
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#ProsleRezervacije">Prošle rezervacije</a></li>
+                <li><a data-toggle="tab" href="#BuduceRezervacije">Buduće rezervacije</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="ProsleRezervacije" class="tab-pane fade in active">
+                    <br />
+                    @if (Model.PrijasnjeRezervacije.Count() > 0)
+                    {
+                        <table class="table table-responsive table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Datum rezervacije</th>
+                                    <th>Račun</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.PrijasnjeRezervacije)
+                                {
+                                    <tr>
+                                        <td>@(item.DatumPocetkaRezerviranja.ToShortDateString() + "-" + item.DatumZavrsetkaRezerviranja.ToShortDateString())</td>
+                                        <td><a class="btn btn-info" asp-action="GetRacunPDf" asp-controller="Racun" asp-route-rezId="@item.RezervacijaId" target="_blank">Račun</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <br />
+                        <h3>Gost nema prijašnjih rezervacija</h3>
+                    }
+
+
+                </div>
+                <div id="BuduceRezervacije" class="tab-pane fade">
+                    <br />
+                    @if (Model.BuduceRezervacije.Count() > 0)
+                    {
+                        <table class="table table-responsive table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Datum rezervacije</th>
+                                    <th>Dužina rezervacije</th>
+                                    <th>Info</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.BuduceRezervacije)
+                                {
+                                    <tr>
+                                        <td>@(item.DatumPocetkaRezerviranja.ToShortDateString() + "-" + item.DatumZavrsetkaRezerviranja.ToShortDateString())</td>
+                                        <td>@((item.DatumZavrsetkaRezerviranja - item.DatumPocetkaRezerviranja).Days) dana</td>
+                                        <td><a class="btn btn-info">Info</a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <br />
+                        <h3>Gost nema budućih rezervacija</h3>
+                    }
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+

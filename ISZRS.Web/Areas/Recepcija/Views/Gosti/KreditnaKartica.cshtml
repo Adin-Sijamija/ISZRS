@@ -1,0 +1,90 @@
+﻿@model ISZR.Web.Models.KreditneKartice
+
+
+@{
+
+    var te = ViewData.ModelState.IsValid.ToString();
+    var Gost = ViewBag.GostID ?? TempData["GostID"];
+    var Rez = ViewBag.RezIDD ?? TempData["RezIDD"];
+}
+
+
+
+
+@if (Model == null || ViewData.ModelState.IsValid == false)
+{
+    <h4><b>Gost ne posjeduje kreditnu karticu, dodajte je sad</b> </h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-9">
+            <form asp-action="_DodajKarticu" asp-controller="Gosti" method="post" id="KreditnaKarticaForm">
+                <input name="IsValid" @*type="hidden" hidden="hidden" *@ value="@ViewData.ModelState.IsValid.ToString()" />
+                <input name="GostID" type="number" hidden="hidden" value="@ViewBag.GostID" />
+                <input name="RezID" type="number" hidden="hidden" value="@ViewBag.RezIDD" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="VaziDo" class="control-label"></label>
+                    <input asp-for="VaziDo" class="form-control " />
+                    <span asp-validation-for="VaziDo" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="BrojKartice" class="control-label"></label>
+                    <input asp-for="BrojKartice" class="form-control" />
+                    <span asp-validation-for="BrojKartice" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CVV" class="control-label"></label>
+                    <input asp-for="CVV" type="number" class="form-control" />
+                    <span asp-validation-for="CVV" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TipKarticeID" class="control-label"></label>
+                    <select asp-for="TipKarticeID" class="form-control" asp-items="ViewBag.TipKarticeID"></select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Snimi" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+}
+else
+{
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.BrojKartice)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BrojKartice)
+        </dd>
+        <dt>
+            CVV
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CVV)
+        </dd>
+        <dt>
+            Validna do
+        </dt>
+        <dd>
+            @Model.VaziDoDatum.ToShortDateString()
+        </dd>
+    </dl>
+    <br />
+    <a asp-action="DodajGlavnogGostaComplete" asp-controller="Gosti"
+       asp-route-RezID="@Rez"
+       asp-route-GostID="@Gost"
+       class="btn btn-success">Odaberi Glavnog Gosta</a>
+}
+
+
+
+
+@*asp-route-RezID="@ViewBag.RezIDD"
+asp-route-GostID="@ViewBag.GostID"*@
+
+
+
+

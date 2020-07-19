@@ -1,0 +1,142 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.ZaduzenejInfoVM
+
+@{
+    ViewData["Title"] = "Zaduzenje Dodaci";
+    Layout = "~/Areas/Recepcija/Views/Shared/_Layout.cshtml";
+
+}
+<br />
+<h2>Dodaci za vašu rezervaciju</h2>
+<hr />
+<h3 class="animated pulse">Trenutna cijena usluge: @Model.Zaduzenje.UkupnaCijena KM</h3>
+
+<div class="DivSeperator">
+    <h4>Vasi dodaci</h4>
+
+    <div class="row">
+        @if (Model.ZauzetiDodaci.Count() > 0)
+        {
+            @foreach (var item in Model.ZauzetiDodaci)
+            {
+                <div class="col-sm-2 col-md-2">
+
+                    <div class="thumbnail">
+                        <img src="data:image;base64,@System.Convert.ToBase64String(item.Dodaci.Slika)" class="zoom" alt="Avatar" style="width:200px;height:200px;">
+
+                        <div class="caption">
+                            <h3>@item.Dodaci.Ime</h3>
+                            <p>Opis:@item.Dodaci.Opis</p>
+                            @if (item.Dodaci.JeUkljucen)
+                            {
+                                <p>Besplatan</p>
+                            }
+                            else
+                            {
+                                <p>Ukupna cijena: @(item.Dodaci.Cijena * item.Kolicina) KM</p>
+
+                            }
+                            <p>
+                                <a asp-action="PromjeniKolicinuDodatka"
+                                   asp-route-DodatakZaduzenjaId="@item.Id"
+                                   asp-route-ZaduzenjeID="@Model.Zaduzenje.Id"
+                                   asp-route-opcija="0">
+                                    <span class="glyphicon glyphicon-minus-sign"></span>
+                                </a>
+                                Količina: @item.Kolicina
+
+                                <a asp-action="PromjeniKolicinuDodatka"
+                                   asp-route-DodatakZaduzenjaId="@item.Id"
+                                   asp-route-ZaduzenjeID="@Model.Zaduzenje.Id"
+                                   asp-route-opcija="1"
+                                   class="plus">
+                                    <span class="glyphicon glyphicon-plus-sign"></span>
+                                </a>
+
+                            </p>
+
+                            <p>
+                                <a class="btn btn-danger" asp-action="UkloniDodataka"
+                                   asp-route-DodatakZaduzenjaId="@item.Id"
+                                   asp-route-ZaduzenjeID="@Model.Zaduzenje.Id">Ukloni</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+
+    </div>
+</div>
+<div class="DivSeperator">
+    <h4>Slobodni dodaci</h4>
+
+    <div class="row">
+        @if (Model.SlobodniDodaci.Count() > 0)
+        {
+            @foreach (var item in Model.SlobodniDodaci)
+            {
+                <div class="col-sm-2 col-md-2">
+
+                    <div class="thumbnail">
+                        <img src="data:image;base64,@System.Convert.ToBase64String(item.Slika)" class="zoom" alt="Avatar" style="width:200px;height:200px;">
+
+                        <div class="caption">
+                            <h3>@item.Ime</h3>
+                            <p>Opis:@item.Opis</p>
+                            @if (item.JeUkljucen)
+                            {
+                                <p>Besplatan</p>
+                            }
+                            else
+                            {
+                                <p>Cijena: @item.Cijena KM</p>
+
+                            }
+                            <p>
+                                <a class="btn btn-success" asp-action="DodajDodatakZaduzenju"
+                                   asp-route-DodatakId="@item.Id"
+                                   asp-route-ZaduzenjeID="@Model.Zaduzenje.Id">Dodaj</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <h4 style="padding-left:20px;">Usluga nema slobodnih dodataka!</h4>
+        }
+
+
+    </div>
+</div>
+<br />
+<a id="NazadLink" asp-action="ZaduzivanjeInfo" asp-route-ZaduzenjeID="@Model.Zaduzenje.Id" class="btn btn-block btn-default">Nazad</a>
+
+
+@section Scripts{
+
+    <script>
+
+        jQuery(document).ready(function ($) {
+
+            if (window.history && window.history.pushState) {
+
+                window.history.pushState('forward', null, './#forward');
+
+                $(window).on('popstate', function () {
+                    //alert('Back button was pressed.');
+
+                    var linknazad = $("#NazadLink").attr("href");
+
+                    window.location.href = linknazad;
+                });
+
+            }
+        });
+
+
+    </script>
+
+}

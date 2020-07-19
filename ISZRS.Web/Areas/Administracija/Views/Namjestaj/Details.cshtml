@@ -1,0 +1,65 @@
+﻿@model ISZR.Web.Models.Namjestaj
+
+@{
+    ViewData["Title"] = "Namještaj detalji";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+
+
+    if (Model.Slika != null)
+    {
+        var base64 = Convert.ToBase64String(Model.Slika);
+        var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+    }
+}
+
+
+
+
+<h2>Namještaj detalji</h2>
+<hr />
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Ime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Ime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Opis)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Opis)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Cijena)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Cijena)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.tipNamjestaja)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.tipNamjestaja)
+        </dd>
+
+    </dl>
+
+    <br />
+    <br />
+    <br />
+    @*<img src="@imgSrc" alt="Alternate Text TEST" />*@
+
+    <img src="@Url.Action("GetNamjestajSliku","Slika",new { id = Model.Id })" height="80" width="80" />
+    <br />
+    <br />
+    <br />
+
+    @*<img src="data:image;base64,@System.Convert.ToBase64String(Model.Slika)" width="80" height="80" />*@
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-default">Uredi</a> |
+    <a asp-action="Index"class="btn btn-default">Nazad</a>
+</div>

@@ -1,0 +1,244 @@
+﻿@model ISZRS.Web.Areas.Recepcija.Models.SobaNamjestajVM
+
+
+
+<h4><b>@("Kapacitet tipa namještaja " + Model.TipSobe + " iznosi " + Model.TrenutniKapcitet + " od " + Model.MaxKapcitet)</b>   </h4>
+
+<form asp-action="_SobaNamjestaj" method="get" class="UpdateForm" asp-controller="Sobe" hidden="hidden">
+    <input value="@Model.SobaId" name="id" />
+    <input value="@Model.TipSobe" name="tip" />
+    <input name="ZaduzenaId" value="@Model.ZaduzeneSoba.Id" hidden="hidden" />
+
+
+</form>
+
+<h2> Namještaj trenutno u sobi</h2>
+<div class="DivHolder">
+    @if (Model.ZaduzeniNamjestaj != null)
+    {
+
+        <h3>Ukupna cijena: <b>@Model.UkupnaCijena KM</b></h3>
+
+        @foreach (var item in Model.ROWZaduzeniNamjestaj)
+        {
+
+            for (int i = 0; i < item.kolicina; i++)
+            {
+                <div class="card ZauzetaKarta">
+                    <img src="data:image;base64,@System.Convert.ToBase64String(item.Namjestaj.Slika)" style="width:100%" class="zoom" />
+                    <div class="container">
+                        <h4><b>@item.Namjestaj.Ime</b></h4>
+                        <p>@item.Namjestaj.Opis</p>
+                        <p>Cijena: @item.Namjestaj.Cijena KM</p>
+                        @*<a class="btn btn-danger ui-icon-key">Ukloni</a>*@
+
+                        <form method="post" asp-action="UkloniNamjestajSobe" class="NamjestajUklanjanje" asp-controller="Sobe">
+                            <input name="SobaID" value="@Model.SobaId" min="1" hidden="hidden" />
+                            <input name="NamjestajID" value="@item.Namjestaj.Id" min="1" hidden="hidden" />
+                            <input name="ZaduzenaId" value="@Model.ZaduzeneSoba.Id" hidden="hidden" />
+                            <input type="submit" value="Ukloni" class="btn btn-success Dodaj" />
+                        </form>
+                    </div>
+                </div>
+            }
+
+
+
+        }
+    }
+</div>
+
+<br />
+<div id="INFODIV">
+
+    @if (Model.TrenutniKapcitet == Model.MaxKapcitet && Model.MaxKapcitet > 0)
+    {
+        <div id="INFO" class="animated pulse">
+            <h4><b>Maximalni kapacitet dostignut. </b></h4>
+            <h4><b>Kako biste dodali jos namještaja, potrebno je ukloniti već dodani namještaj.</b></h4>
+        </div>
+
+    }
+    @if (Model.MaxKapcitet == 0)
+    {
+        <div id="INFO" class="animated pulse">
+            <h4><b>Soba nema dostupan namjestaj ovog tipa </b></h4>
+        </div>
+    }
+</div>
+<br />
+
+
+
+<h2> Namjestaj dostupan za sobu</h2>
+
+<div class="DivHolder">
+    @if (Model.SlobodniNamjestaj != null)
+    {
+
+        @foreach (var item in Model.SlobodniNamjestaj)
+        {
+            <div class="card SlobodnaKarta">
+                <img src="data:image;base64,@System.Convert.ToBase64String(item.Slika)" class="zoom" />
+
+
+                <div class="container">
+                    <h4><b>@item.Ime</b></h4>
+                    <p>@item.Opis</p>
+                    <p>Cijena: @item.Cijena KM</p>
+
+                    @* <a asp-action="DodajNamjestajSobi" class="btn btn-success Dodaj" asp-controller="Sobe" asp-route-SobaId="@Model.SobaId" asp-route-NamjestajID="@item.Id">Dodaj Namjestaj</a>*@
+
+                    <form class="NamjestajDodavanje" method="post" asp-action="DodajNamjestajSobi" asp-controller="Sobe">
+                        <input name="SobaId" value="@Model.SobaId" @*min="1" hidden="hidden" *@ />
+                        <input name="NamjestajID" value="@item.Id" @*min="1" hidden="hidden" *@ />
+                        <input name="ZaduzenaId" value="@Model.ZaduzeneSoba.Id" hidden="hidden" />
+                        <input type="submit" value="Dodaj" class="btn btn-success Dodaj" />
+                    </form>
+
+                </div>
+            </div>
+
+        }
+    }
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<table class="table table-hover">
+        <thead>
+            <tr></tr>
+        </thead>
+        <tbody>
+            @if (Model.ZaduzeniNamjestaj != null)
+            {
+
+                @foreach (var item in Model.ZaduzeniNamjestaj)
+                {
+                    <tr class="zoom">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Ime)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Opis)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cijena)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.tipNamjestaja)
+                        </td>
+                        <td>
+                            <img src="data:image;base64,@System.Convert.ToBase64String(item.Slika)" width="120" height="120" />
+
+                        </td>
+                        <td>
+
+                            <a asp-action="UkloniNamjestajSobe" class="btn-default Ukloni" asp-controller="Sobe" asp-route-SobaId="@Model.SobaId" asp-route-NamjestajID="@item.Id">Ukloni Namjestaj</a>
+                            <form method="post" asp-action="UkloniNamjestajSobe" asp-controller="Sobe">
+                                <input name="SobaID" value="@Model.SobaId" min="1" />
+                                <input name="NamjestajID" value="@item.Id" min="1" />
+
+                            </form>
+
+
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <br />
+    <br />
+
+    <h2> Namjestaj moguc u sobi</h2>
+
+
+    <table class="table table-hover ">
+        <thead>
+            <tr></tr>
+        </thead>
+        <tbody>
+            @if (Model.SlobodniNamjestaj != null)
+            {
+
+                @foreach (var item in Model.SlobodniNamjestaj)
+                {
+                    <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Ime)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Opis)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Cijena)
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.tipNamjestaja)
+                            </td>
+                            <td>
+                                <img src="data:image;base64,@System.Convert.ToBase64String(item.Slika)" class="zoom" />
+
+                            </td>
+                            <td>
+
+                                <a asp-action="DodajNamjestajSobi" class="btn btn-success Dodaj" asp-controller="Sobe" asp-route-SobaId="@Model.SobaId" asp-route-NamjestajID="@item.Id">Dodaj Namjestaj</a>
+
+                                <form method="post" asp-action="DodajNamjestajSobe" asp-controller="Sobe">
+                                    <input name="SobaID" value="@Model.SobaId" min="1" />
+                                    <input name="NamjestajID" value="@item.Id" min="1" />
+                                    <input type="submit" />
+                                </form>
+
+                            </td>
+                        </tr>
+
+
+
+                }
+            }
+        </tbody>
+    </table>
+    <br />*@
+
+

@@ -1,0 +1,79 @@
+﻿@model ISZR.Web.Models.Namjestaj
+
+
+@using ISZR.Web.Models
+
+@{
+    ViewData["Title"] = "Novi Namještaj";
+    Layout = "~/Areas/Administracija/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>Novi Namještaj</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Ime" class="control-label"></label>
+                <input asp-for="Ime" class="form-control" />
+                <span asp-validation-for="Ime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Opis" class="control-label"></label>
+                <input asp-for="Opis" class="form-control" />
+                <span asp-validation-for="Opis" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cijena" class="control-label"></label>
+                <input asp-for="Cijena" class="form-control" />
+                <span asp-validation-for="Cijena" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group">
+                <label asp-for="JeOsnovniNamjestaj" class="control-label"></label>
+                <input asp-for="JeOsnovniNamjestaj" class="form-control" />
+                <span asp-validation-for="JeOsnovniNamjestaj" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="tipNamjestaja" class="control-label"></label>
+                <select asp-for="tipNamjestaja" asp-items="@Html.GetEnumSelectList<Namjestaj.TipNamjestaja>()" class="form-control"></select>
+                <span asp-validation-for="tipNamjestaja" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group">
+                <label>Slika</label>
+                <input type="file" value="Dodaj Sliku" name="Slika" />
+                <img id="SlikaPrikaz" src="#" alt="Odaberi sliku" />
+
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Snimi" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-default" >Nazad</a>
+</div>
+
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#SlikaPrikaz')
+                    .attr('src', e.target.result)
+                    .width(200)
+                    .height(200);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
